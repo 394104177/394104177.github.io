@@ -1,0 +1,1683 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>BFC</title>
+    <url>/2020/10/28/BFC/</url>
+    <content><![CDATA[<h1 id="BFC相关"><a href="#BFC相关" class="headerlink" title="BFC相关"></a>BFC相关</h1><blockquote>
+<p>BFC(Block formatting context)直译为”块级格式化上下文”。</p>
+</blockquote>
+<p>在讲BFC之前得先说下display的属性值，只有它符合成为条件才资格触发BFC机制</p>
+<p><img src="1.image" alt=""></p>
+<h2 id="那些属性值会具有BFC的条件"><a href="#那些属性值会具有BFC的条件" class="headerlink" title="那些属性值会具有BFC的条件"></a>那些属性值会具有BFC的条件</h2><blockquote>
+<p>不是所有的元素模式都能产生BFC，w3c 规范： display 属性为 block, list-item, table 的元素，会产生BFC.</p>
+</blockquote>
+<p>大家有没有发现这个三个都是用来布局最为合理的元素，因为他们就是用来可视化布局。注意其他的，display属性，比如 line 等等，他们创建的是 IFC ，我们下面研究。</p>
+<a id="more"></a>
+<p>这个BFC 有着具体的布局特性:<br><img src="2.image" alt=""></p>
+<p>有宽度和高度，有 外边距margin 有内边距padding 有边框 border。就好比，你有了练习武术的体格了。 有潜力，有资质。</p>
+<h2 id="什么情况下可以让元素产生BFC"><a href="#什么情况下可以让元素产生BFC" class="headerlink" title="什么情况下可以让元素产生BFC"></a>什么情况下可以让元素产生BFC</h2><p>以上盒子具有BFC条件了，就是说有资质了，但是怎样触发才会产生BFC，从而创造这个封闭的环境呢？要给这些元素添加如下属性就可以触发BFC。</p>
+<ul>
+<li>float属性不为none</li>
+<li>position为absolute或fixed</li>
+<li>display为inline-block, table-cell, table-caption, flex, inline-flex</li>
+<li>overflow不为visible。</li>
+</ul>
+<h2 id="BFC元素所具有的特性"><a href="#BFC元素所具有的特性" class="headerlink" title="BFC元素所具有的特性"></a>BFC元素所具有的特性</h2><p>BFC布局规则特性：</p>
+<ul>
+<li><p>在BFC中，盒子从顶端开始垂直地一个接一个地排列</p>
+</li>
+<li><p>盒子垂直方向的距离由margin决定。<strong>属于同一个BFC的两个相邻盒子的margin会发生重叠</strong></p>
+</li>
+<li><p>在BFC中，每一个盒子的左外边缘（margin-left）会触碰到容器的左边缘(border-left)（对于从右到左的格式来说，则触碰到右边缘）。</p>
+<ul>
+<li>BFC的区域不会与浮动盒子产生交集，而是紧贴浮动边缘。</li>
+<li>计算BFC的高度时，自然也会检测浮动或者定位的盒子高度</li>
+</ul>
+</li>
+</ul>
+<p>它是一个独立的渲染区域，只有Block-level box参与， 它规定了内部的Block-level Box如何布局，并且与这个区域外部毫不相干。</p>
+<h2 id="BFC的主要用途"><a href="#BFC的主要用途" class="headerlink" title="BFC的主要用途"></a>BFC的主要用途</h2><h3 id="1-清除元素内部浮动"><a href="#1-清除元素内部浮动" class="headerlink" title="(1) 清除元素内部浮动"></a>(1) 清除元素内部浮动</h3><p>只要把父元素设为BFC就可以清理子元素的浮动了，最常见的用法就是在父元素上设置overflow: hidden样式</p>
+<p>主要用到</p>
+<blockquote>
+<p>计算BFC的高度时，自然也会检测浮动或者定位的盒子高度。</p>
+</blockquote>
+<h3 id="2-解决外边距合并-塌陷-问题"><a href="#2-解决外边距合并-塌陷-问题" class="headerlink" title="(2) 解决外边距合并(塌陷)问题"></a>(2) 解决外边距合并(塌陷)问题</h3><p>主要用到</p>
+<blockquote>
+<p>盒子垂直方向的距离由margin决定。属于同一个BFC的两个相邻盒子的margin会发生重叠</p>
+</blockquote>
+<p>属于同一个sBFC的两个相邻盒子的margin会发生重叠，那么我们创建不属于同一个BFC，就不会发生margin重叠了。<br><img src="3.image" alt=""></p>
+<h3 id="3-制作右侧自适应的盒子问题"><a href="#3-制作右侧自适应的盒子问题" class="headerlink" title="(3) 制作右侧自适应的盒子问题"></a>(3) 制作右侧自适应的盒子问题</h3><p>主要用到</p>
+<blockquote>
+<p>普通流体元素BFC后，为了和浮动元素不产生任何交集，顺着浮动边缘形成自己的封闭上下文</p>
+</blockquote>
+<p><img src="4.image" alt=""></p>
+<h3 id="BFC-总结"><a href="#BFC-总结" class="headerlink" title="BFC 总结"></a>BFC 总结</h3><p>BFC就是页面上的一个隔离的独立容器，容器里面的子元素不会影响到外面的元素。反之也如此。包括浮动，和外边距合并等等，因此，有了这个特性，我们布局的时候就不会出现意外情况了。</p>
+<h1 id="IFC相关"><a href="#IFC相关" class="headerlink" title="IFC相关"></a>IFC相关</h1><blockquote>
+<p>IFC（inline Formatting Context）叫做“行级格式化上下”相对BFC比较简单且问的也不是很多，这里大该做个了解</p>
+</blockquote>
+<p>布局规则如下：</p>
+<ul>
+<li>内部的盒子会在水平方向，一个个地放置(默认就是IFC)；</li>
+<li>IFC的高度，由里面最高盒子的高度决定(里面的内容会撑开父盒子）；</li>
+<li>当一行不够放置的时候会自动切换到下一行；</li>
+</ul>
+]]></content>
+      <categories>
+        <category>css</category>
+      </categories>
+      <tags>
+        <tag>css</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>amd cmd</title>
+    <url>/2020/08/27/amd-cmd/</url>
+    <content><![CDATA[<h1 id="浏览器端模块化的难题"><a href="#浏览器端模块化的难题" class="headerlink" title="浏览器端模块化的难题"></a>浏览器端模块化的难题</h1><a id="more"></a>
+<p><strong>CommonJS的工作原理</strong></p>
+<p>当使用<code>require(模块路径)</code>导入一个模块时，node会做以下两件事情（不考虑模块缓存）：</p>
+<ol>
+<li>通过模块路径找到本机文件，并读取文件内容</li>
+<li>将文件中的代码放入到一个函数环境中执行，并将执行后module.exports的值作为require函数的返回结果</li>
+</ol>
+<p>正是这两个步骤，使得CommonJS在node端可以良好的被支持</p>
+<p>可以认为，<strong>CommonJS是同步的</strong>，必须要等到加载完文件并执行完代码后才能继续向后执行</p>
+<p><strong>当浏览器遇到CommonJS</strong></p>
+<p>当想要把CommonJS放到浏览器端时，就遇到了一些挑战</p>
+<ol>
+<li>浏览器要加载JS文件，需要远程从服务器读取，而网络传输的效率远远低于node环境中读取本地文件的效率。由于CommonJS是同步的，这会极大的降低运行性能</li>
+<li>如果需要读取JS文件内容并把它放入到一个环境中执行，需要浏览器厂商的支持，可是浏览器厂商不愿意提供支持，最大的原因是CommonJS属于社区标准，并非官方标准</li>
+</ol>
+<p><strong>新的规范</strong></p>
+<p>基于以上两点原因，浏览器无法支持模块化</p>
+<p>可这并不代表模块化不能在浏览器中实现</p>
+<p>要在浏览器中实现模块化，只要能解决上面的两个问题就行了</p>
+<p>解决办法其实很简单：</p>
+<ol>
+<li>远程加载JS浪费了时间？做成异步即可，加载完成后调用一个回调就行了</li>
+<li>模块中的代码需要放置到函数中执行？编写模块时，直接放函数中就行了</li>
+</ol>
+<p>基于这种简单有效的思路，出现了AMD和CMD规范，有效的解决了浏览器模块化的问题。</p>
+<h1 id="AMD"><a href="#AMD" class="headerlink" title="AMD"></a>AMD</h1><p>全称是Asynchronous Module Definition，即异步模块加载机制</p>
+<p>require.js实现了AMD规范</p>
+<p>在AMD中，导入和导出模块的代码，都必须放置在define函数中</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">define([依赖的模块列表], <span class="function"><span class="keyword">function</span>(<span class="params">模块名称列表</span>)</span>&#123;</span><br><span class="line">    <span class="comment">//模块内部的代码</span></span><br><span class="line">    <span class="keyword">return</span> 导出的内容</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h1 id="CMD"><a href="#CMD" class="headerlink" title="CMD"></a>CMD</h1><p>全称是Common Module Definition，公共模块定义规范</p>
+<p>sea.js实现了CMD规范</p>
+<p>在CMD中，导入和导出模块的代码，都必须放置在define函数中</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">define(<span class="function"><span class="keyword">function</span>(<span class="params">require, exports, module</span>)</span>&#123;</span><br><span class="line">    <span class="comment">//模块内部的代码</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>javaScript</category>
+      </categories>
+      <tags>
+        <tag>javaScript</tag>
+        <tag>模块化</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>commonjs</title>
+    <url>/2020/08/27/commonjs/</url>
+    <content><![CDATA[<h1 id="CommonJS"><a href="#CommonJS" class="headerlink" title="CommonJS"></a>CommonJS</h1><a id="more"></a>
+<p>在nodejs中，由于有且仅有一个入口文件（启动文件），而开发一个应用肯定会涉及到多个文件配合，因此，nodejs对模块化的需求比浏览器端要大的多</p>
+<p><img src="assets/2019-12-02-11-15-01.png" alt=""></p>
+<p>由于nodejs刚刚发布的时候，前端没有统一的、官方的模块化规范，因此，它选择使用社区提供的CommonJS作为模块化规范</p>
+<p>在学习CommonJS之前，首先认识两个重要的概念：<strong>模块的导出</strong>和<strong>模块的导入</strong></p>
+<h2 id="模块的导出"><a href="#模块的导出" class="headerlink" title="模块的导出"></a>模块的导出</h2><p>要理解模块的导出，首先要理解模块的含义</p>
+<p>什么是模块？</p>
+<p>模块就是一个JS文件，它实现了一部分功能，并隐藏自己的内部实现，同时提供了一些接口供其他模块使用</p>
+<p>模块有两个核心要素：<strong>隐藏</strong>和<strong>暴露</strong></p>
+<p>隐藏的，是自己内部的实现</p>
+<p>暴露的，是希望外部使用的接口</p>
+<p>任何一个正常的模块化标准，都应该默认隐藏模块中的所有实现，而通过一些语法或api调用来暴露接口</p>
+<p><strong>暴露接口的过程即模块的导出</strong></p>
+<p><img src="assets/2019-12-02-11-27-12.png" alt=""></p>
+<h2 id="模块的导入"><a href="#模块的导入" class="headerlink" title="模块的导入"></a>模块的导入</h2><p>当需要使用一个模块时，使用的是该模块暴露的部分（导出的部分），隐藏的部分是永远无法使用的。</p>
+<p><strong>当通过某种语法或api去使用一个模块时，这个过程叫做模块的导入</strong></p>
+<h2 id="CommonJS规范"><a href="#CommonJS规范" class="headerlink" title="CommonJS规范"></a>CommonJS规范</h2><p>CommonJS使用<code>exports</code>导出模块，<code>require</code>导入模块</p>
+<p>具体规范如下：</p>
+<ol>
+<li>如果一个JS文件中存在<code>exports</code>或<code>require</code>，该JS文件是一个模块</li>
+<li>模块内的所有代码均为隐藏代码，包括全局变量、全局函数，这些全局的内容均不应该对全局变量造成任何污染</li>
+<li>如果一个模块需要暴露一些API提供给外部使用，需要通过<code>exports</code>导出，<code>exports</code>是一个空的对象，你可以为该对象添加任何需要导出的内容</li>
+<li>如果一个模块需要导入其他模块，通过<code>require</code>实现，<code>require</code>是一个函数，传入模块的路径即可返回该模块导出的整个内容</li>
+</ol>
+<h2 id="nodejs对CommonJS的实现"><a href="#nodejs对CommonJS的实现" class="headerlink" title="nodejs对CommonJS的实现"></a>nodejs对CommonJS的实现</h2><p>为了实现CommonJS规范，nodejs对模块做出了以下处理</p>
+<ol>
+<li><p>为了保证高效的执行，仅加载必要的模块。nodejs只有执行到<code>require</code>函数时才会加载并执行模块</p>
+</li>
+<li><p>为了隐藏模块中的代码，nodejs执行模块时，会将模块中的所有代码放置到一个函数中执行，以保证不污染全局变量。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="comment">//模块中的代码</span></span><br><span class="line">&#125;)()</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>为了保证顺利的导出模块内容，nodejs做了以下处理</p>
+<ol>
+<li>在模块开始执行前，初始化一个值<code>module.exports = {}</code></li>
+<li><code>module.exports</code>即模块的导出值</li>
+<li>为了方便开发者便捷的导出，nodejs在初始化完<code>module.exports</code>后，又声明了一个变量<code>exports = module.exports</code></li>
+</ol>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">(<span class="function"><span class="keyword">function</span>(<span class="params">module</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">module</span>.exports = &#123;&#125;;</span><br><span class="line">    <span class="keyword">var</span> exports = <span class="built_in">module</span>.exports;</span><br><span class="line">    <span class="comment">//模块中的代码</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">module</span>.exports;</span><br><span class="line">&#125;)()</span><br></pre></td></tr></table></figure></li>
+<li><p>为了避免反复加载同一个模块，nodejs默认开启了模块缓存，如果加载的模块已经被加载过了，则会自动使用之前的导出结果</p>
+</li>
+</ol>
+]]></content>
+      <categories>
+        <category>javaScript</category>
+      </categories>
+      <tags>
+        <tag>javaScript</tag>
+        <tag>模块化</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>animation</title>
+    <url>/2020/08/28/animation/</url>
+    <content><![CDATA[<h1 id="animation"><a href="#animation" class="headerlink" title="animation"></a>animation</h1><blockquote>
+<p>动画(animation)是 CSS3 中最具颠覆性的特征之一，可通过设置多个节点来精确的控制一个或者一组动画，从而实现复杂的动画效果, 先定义动画在调用定义好的动画</p>
+</blockquote>
+<h2 id="动画序列"><a href="#动画序列" class="headerlink" title="动画序列"></a>动画序列</h2><blockquote>
+<p>0% 是动画的开始，100 % 是动画的完成，这样的规则就是动画序列</p>
+</blockquote>
+<ul>
+<li>在 @keyframs 中规定某项 CSS 样式，就由创建当前样式逐渐改为新样式的动画效果</li>
+<li>动画是使元素从一个样式逐渐变化为另一个样式的效果，可以改变任意多的样式任意多的次数</li>
+<li>用百分比来规定变化发生的时间，或用 from 和 to，等同于 0% 和 100%</li>
+</ul>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="keyword">@keyframes</span> move&#123;</span><br><span class="line">	0% &#123;</span><br><span class="line">		<span class="attribute">transform</span>: <span class="built_in">translate</span>(<span class="number">0px</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="selector-tag">form</span> &#123;</span><br><span class="line">		<span class="attribute">transform</span>: <span class="built_in">translate</span>(<span class="number">0px</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	100% &#123;</span><br><span class="line">		<span class="attribute">transform</span>: <span class="built_in">translate</span>(<span class="number">500px</span>, <span class="number">0</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="selector-tag">to</span> &#123;</span><br><span class="line">		<span class="attribute">transform</span>: <span class="built_in">translate</span>(<span class="number">500px</span>, <span class="number">0</span>)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="动画常见属性"><a href="#动画常见属性" class="headerlink" title="动画常见属性"></a>动画常见属性</h2><p><img src="1.image" alt=""></p>
+<p>动画简写方式</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* animation: 动画名称 持续时间 运动曲线 何时开始 播放次数 是否反方向 起始与结束状态 */</span></span><br><span class="line"><span class="selector-tag">animation</span>: <span class="selector-tag">name</span> <span class="selector-tag">duration</span> <span class="selector-tag">timing-function</span> <span class="selector-tag">delay</span> <span class="selector-tag">iteration-count</span> <span class="selector-tag">direction</span> <span class="selector-tag">fill-mode</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>CSS实现扫描二维码</strong></p>
+<p><img src="2.image" alt=""></p>
+]]></content>
+      <categories>
+        <category>css</category>
+      </categories>
+      <tags>
+        <tag>css</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>es6模块化</title>
+    <url>/2020/09/27/es6%E6%A8%A1%E5%9D%97%E5%8C%96/</url>
+    <content><![CDATA[<h1 id="ES6模块化简介"><a href="#ES6模块化简介" class="headerlink" title="ES6模块化简介"></a>ES6模块化简介</h1><p>ECMA组织参考了众多社区模块化标准，终于在2015年，随着ES6发布了官方的模块化标准，后成为ES6模块化</p>
+<p>ES6模块化具有以下的特点</p>
+<ol>
+<li>使用依赖<strong>预声明</strong>的方式导入模块<ol>
+<li>依赖延迟声明<ol>
+<li>优点：某些时候可以提高效率</li>
+<li>缺点：无法在一开始确定模块依赖关系（比较模糊）</li>
+</ol>
+</li>
+<li>依赖预声明<ol>
+<li>优点：在一开始可以确定模块依赖关系</li>
+<li>缺点：某些时候效率较低</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>灵活的多种导入导出方式</li>
+<li>规范的路径表示法：所有路径必须以./或../开头<a id="more"></a>
+<h1 id="基本导入导出"><a href="#基本导入导出" class="headerlink" title="基本导入导出"></a>基本导入导出</h1></li>
+</ol>
+<h2 id="模块的引入"><a href="#模块的引入" class="headerlink" title="模块的引入"></a>模块的引入</h2><p><strong>注意：这一部分非模块化标准</strong></p>
+<p>目前，浏览器使用以下方式引入一个ES6模块文件</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"入口文件"</span> <span class="attr">type</span>=<span class="string">"module"</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="模块的基本导出和导入"><a href="#模块的基本导出和导入" class="headerlink" title="模块的基本导出和导入"></a>模块的基本导出和导入</h2><p>ES6中的模块导入导出分为两种：</p>
+<ol>
+<li>基本导入导出</li>
+<li>默认导入导出</li>
+</ol>
+<p><img src="assets/2019-12-03-17-00-44.png" alt=""></p>
+<h3 id="基本导出"><a href="#基本导出" class="headerlink" title="基本导出"></a>基本导出</h3><p>类似于 <code>exports.xxx = xxxx</code></p>
+<p>基本导出可以有多个，每个必须有名称</p>
+<p>基本导出的语法如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">export</span> 声明表达式</span><br></pre></td></tr></table></figure>
+
+<p>或</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">export</span> &#123;具名符号&#125;</span><br></pre></td></tr></table></figure>
+
+<p>由于基本导出必须具有名称，所以要求导出内容必须跟上<strong>声明表达式</strong>或<strong>具名符号</strong></p>
+<h3 id="基本导入"><a href="#基本导入" class="headerlink" title="基本导入"></a>基本导入</h3><p>由于使用的是<strong>依赖预加载</strong>，因此，导入任何其他模块，导入代码必须放置到所有代码之前</p>
+<p>对于基本导出，如果要进行导入，使用下面的代码</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;导入的符号列表&#125; <span class="keyword">from</span> <span class="string">"模块路径"</span></span><br></pre></td></tr></table></figure>
+
+<p>注意以下细节：</p>
+<ul>
+<li>导入时，可以通过关键字<code>as</code>对导入的符号进行重命名</li>
+<li>导入时使用的符号是常量，不可修改</li>
+<li>可以使用*号导入所有的基本导出，形成一个对象</li>
+</ul>
+<h1 id="默认导入导出"><a href="#默认导入导出" class="headerlink" title="默认导入导出"></a>默认导入导出</h1><p><img src="assets/2019-12-03-17-00-44.png" alt=""></p>
+<h2 id="默认导出"><a href="#默认导出" class="headerlink" title="默认导出"></a>默认导出</h2><p>每个模块，除了允许有多个基本导出之外，还允许有一个默认导出</p>
+<p>默认导出类似于CommonJS中的<code>module.exports</code>，由于只有一个，因此无需具名</p>
+<p>具体的语法是</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> 默认导出的数据</span><br></pre></td></tr></table></figure>
+
+<p>或</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">export</span> &#123;默认导出的数据 <span class="keyword">as</span> <span class="keyword">default</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p>由于每个模块仅允许有一个默认导出，因此，每个模块不能出现多个默认导出语句</p>
+<h2 id="默认导入"><a href="#默认导入" class="headerlink" title="默认导入"></a>默认导入</h2><p>需要想要导入一个模块的默认导出，需要使用下面的语法</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> 接收变量名 <span class="keyword">from</span> <span class="string">"模块路径"</span></span><br></pre></td></tr></table></figure>
+
+<p>类似于CommonJS中的</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> 接收变量名 = <span class="built_in">require</span>(<span class="string">"模块路径"</span>)</span><br></pre></td></tr></table></figure>
+
+<p>由于默认导入时变量名是自行定义的，因此没有别名一说</p>
+<p>如果希望同时导入某个模块的默认导出和基本导出，可以使用下面的语法</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> 接收默认导出的变量, &#123;接收基本导出的变量&#125; <span class="keyword">from</span> <span class="string">"模块路径"</span></span><br></pre></td></tr></table></figure>
+
+<p>注：如果使用*号，会将所有基本导出和默认导出聚合到一个对象中，默认导出会作为属性default存在</p>
+<h1 id="ES6模块化的其他细节"><a href="#ES6模块化的其他细节" class="headerlink" title="ES6模块化的其他细节"></a>ES6模块化的其他细节</h1><ol>
+<li><strong>尽量导出不可变值</strong></li>
+</ol>
+<p>当导出一个内容时，尽量保证该内容是不可变的（大部分情况都是如此）</p>
+<p>因为，虽然导入后，无法更改导入内容，但是在导入的模块内部却有可能发生更改，这将导致一些无法预料的事情发生</p>
+<ol start="2">
+<li><strong>可以使用无绑定的导入用于执行一些初始化代码</strong></li>
+</ol>
+<p>如果我们只是想执行模块中的一些代码，而不需要导入它的任何内容，可以使用无绑定的导入：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">"模块路径"</span></span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li><strong>可以使用绑定再导出，来重新导出来自另一个模块的内容</strong></li>
+</ol>
+<p>有的时候，我们可能需要用一个模块封装多个模块，然后有选择的将多个模块的内容分别导出，可以使用下面的语法轻松完成</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">export</span> &#123;绑定的标识符&#125; <span class="keyword">from</span> <span class="string">"模块路径"</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="assets/2019-12-04-14-33-14.png" alt=""></p>
+]]></content>
+      <categories>
+        <category>JavaScript</category>
+      </categories>
+      <tags>
+        <tag>模块化</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>css继承</title>
+    <url>/2020/10/28/css%E7%BB%A7%E6%89%BF/</url>
+    <content><![CDATA[<h1 id="三大特性"><a href="#三大特性" class="headerlink" title="三大特性"></a>三大特性</h1><p>css大三特性是css最重要的部分，可以说如果了解了这三大特性就对css撑握了一半，对于属性只不过是记不记的住的事，而这个是重在理解。</p>
+<ul>
+<li>层叠性：css样式冲突采取的原则（后者覆盖前者)</li>
+<li>继承性：对于部分属性样式会有天生的继承</li>
+<li>优先级：选择器优先级算法<a id="more"></a>
+<h2 id="选择器"><a href="#选择器" class="headerlink" title="选择器"></a>选择器</h2></li>
+</ul>
+<ul>
+<li><p>基本选择器</p>
+<ul>
+<li>类名：<code>.box</code></li>
+<li>标签: <code>div</code></li>
+<li>属性: <code>input[type=&quot;eamil&quot;]  | a[href*=&quot;http://www.beige.world&quot;</code></li>
+<li>ID: <code>#box</code></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>伪类选择器</p>
+<ul>
+<li>结构伪类: <code>:nth-child(n) | :nth-of-type(n) | :hover</code></li>
+<li>伪元素: <code>::before | ::after</code></li>
+</ul>
+</li>
+</ul>
+<p>组合选择器</p>
+<p>相邻兄弟 <code>A + B</code><br>普通兄弟 <code>A ~ B</code><br>子选择器 <code>A &gt; B</code><br>后代选择器 <code>A  B</code></p>
+<h3 id="基本选择器"><a href="#基本选择器" class="headerlink" title="基本选择器"></a>基本选择器</h3>   <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">    <span class="comment">/* 匹配包含title属性的a标签 =&gt; &lt;a title&gt; */</span></span><br><span class="line">    a[title] &#123;<span class="attr">color</span>: purple;&#125;  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 存在href属性并且属性值为"http://beige.world"的&lt;a&gt;标签*/</span></span><br><span class="line"><span class="comment">/*  &lt;a href="http://beige.world"&gt; */</span> </span><br><span class="line">a[href=<span class="string">"http://beige.world"</span>] &#123;<span class="attr">color</span>: green;&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 存在href属性并且属性值包含"baidu"的&lt;a&gt;标签*/</span></span><br><span class="line"> <span class="comment">/*  </span></span><br><span class="line"><span class="comment">  &lt;a href="https://baidu.com/we"&gt; </span></span><br><span class="line"><span class="comment">  &lt;a href="https://fanyi.baidu.com/we"&gt; </span></span><br><span class="line"><span class="comment">  &lt;a href="https://pan.baidu.com/we"&gt; </span></span><br><span class="line"><span class="comment"> */</span> </span><br><span class="line">a[href*=<span class="string">"baidu"</span>] &#123;font-size: <span class="number">20</span>px;&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 存在id属性并且属性值结尾是"-wrapper"的&lt;div&gt;标签 */</span></span><br><span class="line"> <span class="comment">/*  </span></span><br><span class="line"><span class="comment">  &lt;div id="btn-wrapper"&gt;</span></span><br><span class="line"><span class="comment">  &lt;div id="menu-wrapper"&gt;</span></span><br><span class="line"><span class="comment">  &lt;div id="pic-wrapper"&gt;</span></span><br><span class="line"><span class="comment"> */</span> </span><br><span class="line">div[id$=<span class="string">"-wrapper"</span>] &#123;<span class="attr">display</span>: flex;&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 存在class属性并且属性值包含以空格分隔的"logo"的&lt;div&gt;元素 */</span></span><br><span class="line"> <span class="comment">/*  </span></span><br><span class="line"><span class="comment">  &lt;div id="aaa logo"&gt;</span></span><br><span class="line"><span class="comment">  &lt;div id="bbb logo"&gt;</span></span><br><span class="line"><span class="comment"> */</span> </span><br><span class="line"> div[<span class="class"><span class="keyword">class</span>~</span>=<span class="string">"logo"</span>] &#123; <span class="attr">padding</span>: <span class="number">2</span>px; &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="伪类选择器"><a href="#伪类选择器" class="headerlink" title="伪类选择器"></a>伪类选择器</h3><h4 id="结构伪类"><a href="#结构伪类" class="headerlink" title="结构伪类"></a>结构伪类</h4><p>nth-child(n) | nth-of-type(n)</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">&#96;&#96;&#96;html</span><br><span class="line">&lt;ul&gt;</span><br><span class="line">  &lt;li&gt;1&lt;&#x2F;li&gt;</span><br><span class="line">  &lt;li&gt;</span><br><span class="line">    &lt;p&gt;a1&lt;&#x2F;p&gt;</span><br><span class="line">    &lt;div&gt;b1&lt;&#x2F;div&gt;</span><br><span class="line">    &lt;p&gt;a2&lt;&#x2F;p&gt;</span><br><span class="line">    &lt;div&gt;b2&lt;&#x2F;div&gt;</span><br><span class="line">  &lt;&#x2F;li&gt;</span><br><span class="line">  &lt;li&gt;3&lt;&#x2F;li&gt;</span><br><span class="line">  &lt;li&gt;4&lt;&#x2F;li&gt;</span><br><span class="line">  &lt;li&gt;5&lt;&#x2F;li&gt;</span><br><span class="line">&lt;&#x2F;ul&gt;</span><br></pre></td></tr></table></figure>
+
+<p>CSS</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line">// 第一个li  =&gt;  <span class="tag">&lt;<span class="name">li</span>&gt;</span>1<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">ul li:first-child &#123; background-color: lightseagreen;&#125; </span><br><span class="line"> // 最后一个li =&gt;  <span class="tag">&lt;<span class="name">li</span>&gt;</span>5<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">ul li:last-child &#123; background-color: lightcoral;&#125;</span><br><span class="line">// 第三个li =&gt; <span class="tag">&lt;<span class="name">li</span>&gt;</span>3<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">ul li:nth-child(3) &#123; background-color: aqua; &#125; </span><br><span class="line">// 第二个li下的第一个div(不是div标签的都不算) =&gt; <span class="tag">&lt;<span class="name">div</span>&gt;</span>b1<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">ul li:nth-child(2) &gt; div:nth-of-type(1) &#123;background-color: red&#125;</span><br></pre></td></tr></table></figure>
+
+<p>它俩的区别</p>
+<ul>
+<li>nth-child  选择父元素里面的第几个子元素，不管是第几个类型</li>
+<li>nth-of-type  选择指定类型的元素</li>
+</ul>
+<p>下面讲讲nth-child()括号中的公式，这个算是这个选择器的亮点了。<br><img src="2.image" alt=""></p>
+<p>注意⚠：本质上就是选中第几个子元素</p>
+<p>n 可以是数字、关键字、公式<br>n 如果是数字，就是选中第几个<br>常见的关键字有 even 偶数、odd 奇数<br>常见的公式如下(如果 n 是公式，则从 0 开始计算)<br>但是第 0 个元素或者超出了元素的个数会被忽略</p>
+<p>对于这里面的公式平常也用不到太复杂的，我说下我的技巧：nth-child(3n + 3); 这里的n可以看做几个为一组，3可以看做选这组的第几个。<br>例： nth-child(5n + 3) ：5个为一组，选一组中的第三个。 对于”-“号就表示选择的是前面的。</p>
+<h3 id="组合选择器"><a href="#组合选择器" class="headerlink" title="组合选择器"></a>组合选择器</h3><p>组合选择器本质上就是通过连接符来对两个选择器进行组合</p>
+<p>子选择器 <code>A &gt; B</code><br>后代选择器 <code>A  B</code></p>
+<p>上面这两我就不说了，相信大家都用烂了。主要说说下面这两个。</p>
+<p>相邻兄弟 <code>A + B</code><br>普通兄弟 <code>A ~ B</code></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">&#96;&#96;&#96;html</span><br><span class="line">&lt;div class&#x3D;&quot;box1&quot;&gt;</span><br><span class="line">    &lt;div&gt;One&lt;&#x2F;div&gt;</span><br><span class="line">    &lt;div&gt;Two!&lt;&#x2F;div&gt;</span><br><span class="line">    &lt;div&gt;Three&lt;&#x2F;div&gt;</span><br><span class="line">    &lt;p&gt;pppp&lt;&#x2F;p&gt;</span><br><span class="line">  &lt;&#x2F;div&gt;</span><br><span class="line">  &lt;div class&#x3D;&quot;box2&quot;&gt;</span><br><span class="line">    &lt;div&gt;One2&lt;&#x2F;div&gt;</span><br><span class="line">    &lt;p&gt;pppp1&lt;&#x2F;p&gt;</span><br><span class="line">    &lt;div&gt;Two2!&lt;&#x2F;div&gt;</span><br><span class="line">    &lt;p&gt;pppp2&lt;&#x2F;p&gt;</span><br><span class="line">  &lt;&#x2F;div&gt;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#96;&#96;&#96;css</span><br><span class="line">&lt;style&gt;</span><br><span class="line">    &#x2F;*</span><br><span class="line">      (+标识)符介于两个选择器之间，当第二个选择器匹配的元素紧跟着第一个元素后面并且它们都是同一个父亲</span><br><span class="line">      .box1 div:first-of-type(A元素)</span><br><span class="line">      div(B元素) </span><br><span class="line">      匹配紧跟着A的B</span><br><span class="line">    *&#x2F;</span><br><span class="line">    .box1 div:first-of-type+div &#123; color: red; &#125;</span><br><span class="line"></span><br><span class="line">    .box1 div:first-of-type+p &#123; color: red;&#125;  筛选不到的</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &#x2F;*</span><br><span class="line">      (~标识)符介于两个选择器之间，匹配第一个选择器元素后面所有匹配第二个选择器的同层级元素</span><br><span class="line">      .box2 div(A元素)</span><br><span class="line">      p(B元素)</span><br><span class="line">      匹配所有A后面的B</span><br><span class="line">    *&#x2F;</span><br><span class="line">    .box2 div~p &#123; color: seagreen; &#125;</span><br><span class="line">  &lt;&#x2F;style&gt;</span><br></pre></td></tr></table></figure>
+
+<p>组合选择器可以用于：hover伪类操纵自己包含的子元素及以外的元素。举个例子</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">'a'</span>&gt;</span>元素1</span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">'b'</span>&gt;</span>元素2<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">'c'</span>&gt;</span>元素3</span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">'b'</span>&gt;</span>元素2<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span>同级元素1<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span>同级元素2<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span>同级元素3<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">#a:hover &gt; #b&#123;....&#125;    </span><br><span class="line">#a:hover ~ div&#123;....&#125; // 鼠标停留在a元素的时候让所有同层级元素有某某样式</span><br><span class="line">// 防止选择器层级替换了下面的样式</span><br><span class="line">#a:hover + #c&#123;....&#125; // 鼠标停留在a元素的时候让同层级中的c元素有某某样式</span><br><span class="line">#a:hover + #c &gt; #b&#123;....&#125; //  鼠标停留在a元素的时候让同层级中的c元素下的b元素有某某样式</span><br></pre></td></tr></table></figure>
+<p>上面这两选择器在做一些特效页的时候应该是会用到的。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#96;&#96;&#96;html</span><br><span class="line">&lt;body&gt;</span><br><span class="line">  &lt;div class&#x3D;&quot;img-box enter-box&quot;&gt; &lt;!-- 悬浮在这个盒子的时候动态添加enter-box类名 --&gt;</span><br><span class="line">    &lt;img src&#x3D;&quot;http:&#x2F;&#x2F;resource.beige.world&#x2F;imgs&#x2F;beige.jpg&quot; alt&#x3D;&quot;&quot;&gt;</span><br><span class="line">    &lt;div class&#x3D;&quot;cover&quot;&gt;</span><br><span class="line">      &lt;h3&gt;标题名称&lt;&#x2F;h3&gt;</span><br><span class="line">      &lt;p class&#x3D;&quot;con&quot;&gt;Bei Ge&lt;&#x2F;p&gt;</span><br><span class="line">      &lt;p class&#x3D;&quot;brier&quot;&gt;这里放内容简介，内容简介,这里放内容简介，内容简介,这里放内容简介，内容简介&lt;&#x2F;p&gt;</span><br><span class="line">      &lt;div class&#x3D;&quot;handle&quot;&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;span&gt;.&lt;&#x2F;span&gt;&lt;&#x2F;div&gt;</span><br><span class="line">    &lt;&#x2F;div&gt;</span><br><span class="line">  &lt;&#x2F;div&gt;</span><br><span class="line">  &lt;!-- 其他盒子 --&gt;</span><br><span class="line">  &lt;div class&#x3D;&quot;img-box&quot;&gt;2&lt;&#x2F;div&gt; </span><br><span class="line">  &lt;div class&#x3D;&quot;img-box&quot;&gt;3&lt;&#x2F;div&gt;</span><br><span class="line">  &lt;div class&#x3D;&quot;img-box&quot;&gt;4&lt;&#x2F;div&gt;</span><br><span class="line">  &lt;div class&#x3D;&quot;img-box&quot;&gt;5&lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;body&gt;</span><br></pre></td></tr></table></figure>
+<p>样式<br>布局样式</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">style</span>&gt;</span></span><br><span class="line"><span class="css">     <span class="selector-class">.img-box</span> &#123;</span></span><br><span class="line">      position: relative;</span><br><span class="line">      top: 100px;</span><br><span class="line">      left: 200px;</span><br><span class="line">      z-index: 1;</span><br><span class="line">      display: inline-block;</span><br><span class="line">      overflow: hidden;</span><br><span class="line"><span class="css">      <span class="selector-tag">background</span>: <span class="selector-id">#70adc4</span>;</span></span><br><span class="line">      cursor: pointer;</span><br><span class="line"><span class="css">      <span class="selector-tag">transition</span>: <span class="selector-tag">transform</span> <span class="selector-class">.5s</span>, <span class="selector-tag">box-shadow</span> <span class="selector-class">.3s</span>;</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="css">    <span class="selector-class">.img-box</span> <span class="selector-tag">img</span> &#123;</span></span><br><span class="line">      width: 200px;</span><br><span class="line">      height: 200px;</span><br><span class="line">      opacity: 1;</span><br><span class="line">      float: left;</span><br><span class="line">    &#125;</span><br><span class="line">	</span><br><span class="line"><span class="css">	<span class="selector-class">.img-box</span> <span class="selector-class">.cover</span> &#123;</span></span><br><span class="line">      width: 200px;</span><br><span class="line">      height: 200px;</span><br><span class="line">      padding: 15px;</span><br><span class="line">      position: absolute;</span><br><span class="line">      box-sizing: border-box;</span><br><span class="line">      color: hotpink;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="css">    <span class="selector-class">.img-box</span> <span class="selector-class">.cover</span> <span class="selector-tag">h3</span> &#123;</span></span><br><span class="line">      margin-top: 10%;</span><br><span class="line">      font-size: 24px;</span><br><span class="line">      font-weight: bold;</span><br><span class="line"><span class="css">      <span class="selector-tag">text-shadow</span>: 0 0 2<span class="selector-tag">px</span> <span class="selector-id">#ccc</span>;</span></span><br><span class="line">      opacity: 0;</span><br><span class="line"><span class="css">      <span class="selector-tag">transition</span>: <span class="selector-tag">opacity</span> <span class="selector-class">.5s</span>;</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="css">    <span class="selector-class">.img-box</span> <span class="selector-class">.cover</span> <span class="selector-class">.con</span> &#123;</span></span><br><span class="line">      margin: 20px 0;</span><br><span class="line">      font-style: italic;</span><br><span class="line">      font-weight: bold;</span><br><span class="line">      transform: translateX(-150%);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="css">    <span class="selector-class">.img-box</span> <span class="selector-class">.cover</span> <span class="selector-class">.brier</span> &#123;</span></span><br><span class="line">      font-size: 12px;</span><br><span class="line">      transform: translateX(150%);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="css">    <span class="selector-class">.img-box</span> <span class="selector-class">.cover</span> <span class="selector-class">.handle</span> &#123;</span></span><br><span class="line">      position: absolute;</span><br><span class="line">      right: 10px;</span><br><span class="line">      bottom: -50px;</span><br><span class="line">      font-size: 25px;</span><br><span class="line">      transition: bottom 1s;</span><br><span class="line"><span class="css">      <span class="comment">/* 对于position的过渡动画, 不能用position, 直接用位置属性: left right top bottom */</span></span></span><br><span class="line">    &#125;</span><br><span class="line">  <span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>定义了一个animation动画</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="keyword">@keyframes</span> textAnimation &#123;</span><br><span class="line">      <span class="comment">/* 0% &#123;</span></span><br><span class="line"><span class="comment">        transform: translateX(150%);</span></span><br><span class="line"><span class="comment">      &#125; */</span></span><br><span class="line">      100% &#123;</span><br><span class="line">        <span class="attribute">transform</span>: <span class="built_in">translateX</span>(<span class="number">0</span>);</span><br><span class="line">      &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>悬浮在盒子设置样式</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.img-box</span><span class="selector-pseudo">:hover</span> &#123;</span><br><span class="line">	<span class="attribute">transform</span>: <span class="built_in">scale</span>(<span class="number">1.1</span>);</span><br><span class="line">	<span class="attribute">box-shadow</span>: <span class="number">2px</span> <span class="number">2px</span> <span class="number">13px</span> <span class="number">3px</span> <span class="number">#ccc</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.img-box</span><span class="selector-pseudo">:hover</span> <span class="selector-tag">img</span> &#123;</span><br><span class="line">	<span class="attribute">opacity</span>: .<span class="number">5</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.img-box</span><span class="selector-pseudo">:hover</span> <span class="selector-class">.cover</span> <span class="selector-tag">h3</span> &#123;</span><br><span class="line"> 	<span class="attribute">opacity</span>: <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.img-box</span><span class="selector-pseudo">:hover</span> <span class="selector-tag">p</span> &#123;</span><br><span class="line">	<span class="attribute">animation</span>: textAnimation .<span class="number">6s</span> ease-out forwards;</span><br><span class="line">	<span class="comment">/* forwards让动画停留在最后一帧 */</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.img-box</span><span class="selector-pseudo">:hover</span> <span class="selector-class">.cover</span> <span class="selector-class">.handle</span> &#123;</span><br><span class="line">  	<span class="attribute">bottom</span>: <span class="number">5px</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.enter-box</span><span class="selector-pseudo">:hover</span> ~ <span class="selector-class">.img-box</span> &#123;</span><br><span class="line">  <span class="attribute">background-color</span>: transparent;</span><br><span class="line">  <span class="attribute">color</span>: wheat;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.enter-box</span><span class="selector-pseudo">:hover</span> + <span class="selector-class">.img-box</span> &#123;</span><br><span class="line">  <span class="attribute">color</span>: red;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li>flex(弹性布局）</li>
+<li>transform: translate3D rodate3D</li>
+<li>animation(设定动画)</li>
+<li>3D or 透视(perspective)</li>
+</ul>
+<p>这里需要注意在使用伪类Hover的注意点，在使用他影响子级元素的时候尽量将选择器写全。</p>
+<p>使用Hover时的一些细节。</p>
+<p>结构比较简单</p>
+<blockquote>
+<p>flex类名用于布局实现重置和水平居中，box: 绿色盒子；center: 紫色盒子 inner: 橙黄色盒子</p>
+</blockquote>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"box flex"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"center flex"</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"inner"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>我们用了一个:hover让鼠标虚浮的时候让盒子变红</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.box</span><span class="selector-pseudo">:hover</span> <span class="selector-tag">div</span> &#123;</span><br><span class="line">	<span class="attribute">background-color</span>: red;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这段代码只让center盒子变红了，inner为什么没有变红呢？？？<br> 因为CSS选择器的优先级！</p>
+<p>我们在实现的时候一般都会像下面这样写吧，这个时候使用伪类选择器改变元素样式的时候就要注意选择器优先级的问题了。</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.box</span> <span class="selector-class">.center</span> &#123;</span><br><span class="line">      <span class="attribute">width</span>: <span class="number">150px</span>;</span><br><span class="line">      <span class="attribute">height</span>: <span class="number">150px</span>;</span><br><span class="line">      <span class="attribute">background-color</span>: blueviolet;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.box</span> <span class="selector-class">.center</span> <span class="selector-class">.inner</span> &#123;</span><br><span class="line">      <span class="attribute">width</span>: <span class="number">100px</span>;</span><br><span class="line">      <span class="attribute">height</span>: <span class="number">100px</span>;</span><br><span class="line">      <span class="attribute">background-color</span>: coral;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这段代码的优先级比 .box .center高，所以他也就只能覆盖它了。</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.box</span><span class="selector-pseudo">:hover</span> <span class="selector-tag">div</span> &#123; </span><br><span class="line">      <span class="attribute">background-color</span>: red;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>相信我们很多人如果在写鼠标悬浮大盒子让最里面的inner盒子变色的时候，都会这么写吧：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.box:hover .inner &#123; </span><br><span class="line">      background-color: red;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>有用吗？没用！</p>
+<p>注意⚠: 优先级还是没有.box .center .inner高。</p>
+<h2 id="层叠性"><a href="#层叠性" class="headerlink" title="层叠性"></a>层叠性</h2><blockquote>
+<p>所谓层叠性是指多种CSS样式的叠加。是浏览器处理冲突的一个能力,如果一个属性通过两个相同选择器设置到同一个元素上，那么这个时候一个属性就会将另一个属性层叠掉</p>
+</blockquote>
+<ul>
+<li><p>原则：</p>
+<ul>
+<li>样式冲突，遵循的原则是就近原则。 那个样式离着结构近，就执行那个样式。</li>
+<li>样式不冲突，不会层叠</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>CSS层叠性最后的执行口诀：  长江后浪推前浪，前浪死在沙滩上。</p>
+</blockquote>
+<p>继承性</p>
+<blockquote>
+<p>子标签会继承父标签的某些样式，如文本颜色和字号。 想要设置一个可继承的属性，只需将它应用于父元素即可。简单的理解就是：  子承父业</p>
+</blockquote>
+<figure class="highlight plain"><figcaption><span>龙生龙，凤生凤，老鼠生的孩子会打洞```</span></figcaption><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line">我们恰当地使用继承可以简化代码，降低CSS样式的复杂性。比如有很多后代元素都需要某个样式，可以给父级指定一个，这些孩子继承过来就好了。</span><br><span class="line"></span><br><span class="line">注意点：在CSS的继承中不仅仅是儿子可以继承, 只要是后代都可以继承</span><br><span class="line"></span><br><span class="line">&#96;&#96;&#96;可继承的属性</span><br></pre></td></tr></table></figure>
+<p><img src="3.image" alt=""></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">&gt;注意点: 对于天生自带的继承属性我们可以控制它是否需要继承</span><br><span class="line"></span><br><span class="line">四个属性</span><br><span class="line"></span><br><span class="line">- inherit: 被应用属性继承父级的该属性（默认就是该值）</span><br><span class="line">- initial初始化，把应用属性初始为它默认的样式，并且排除继承的干扰（默认会继承的属性也不在默认继承，而是表现出没有任何设置时候的默认样式）</span><br><span class="line">- unset：意思是恢复其原本的继承方式。对color属性而言，就相当于inherit；而对于诸如border这样默认不继承的属性，就相当于initial。</span><br><span class="line">- revert: 效果等同于unset且浏览器支持有限，这里不做演示</span><br><span class="line"></span><br><span class="line">&#96;&#96;&#96;效果图</span><br></pre></td></tr></table></figure>
+<p><img src="4.image" alt=""></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#96;&#96;&#96;html</span><br><span class="line">&lt;ul style&#x3D;&quot;color: green;&quot;&gt;</span><br><span class="line">    &lt;li class&#x3D;&quot;default&quot;&gt;Default &lt;a href&#x3D;&quot;#&quot;&gt;link&lt;&#x2F;a&gt; color&lt;&#x2F;li&gt;</span><br><span class="line">    &lt;li class&#x3D;&quot;inherit&quot;&gt;Inherit the &lt;a style&#x3D;&quot;color: inherit;&quot; href&#x3D;&quot;#&quot;&gt;link&lt;&#x2F;a&gt; color&lt;&#x2F;li&gt;</span><br><span class="line">    &lt;li class&#x3D;&quot;initial&quot;&gt;Reset the &lt;a style&#x3D;&quot;color: initial;&quot; href&#x3D;&quot;#&quot;&gt;link&lt;&#x2F;a&gt; color&lt;&#x2F;li&gt;</span><br><span class="line">    &lt;li class&#x3D;&quot;unset&quot;&gt;Unset the &lt;a style&#x3D;&quot;color: unset;&quot; href&#x3D;&quot;#&quot;&gt;link&lt;&#x2F;a&gt; color&lt;&#x2F;li&gt;</span><br><span class="line">&lt;&#x2F;ul&gt;</span><br></pre></td></tr></table></figure>
+
+
+<ul>
+<li>default中的a标签没有写默认为inherit属性，但是使用了浏览器预设样式表：可以理解为浏览器帮我们为<a>写了个style，其优先级自然就高于其父元素了。</li>
+<li>inherit中的a标签在行内写了inherit，于是使用其父（或祖父，etc）元素的颜色值，在这里是绿色；</li>
+<li>initial中的a标签使用color属性初始值（黑色), 注意不要混淆属性初始值和浏览器样式表指定值，样式预设表是浏览器事先写好的样式，但是我color默认值就是黑色啊。</li>
+<li>unset，意思是恢复其原本的继承方式。对color属性而言，就相当于inherit；而对于诸如border这样默认不继承的属性，就相当于initial。</li>
+</ul>
+<p>如果我们需要控制元素所有属性的继承使用all属性</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.inherit</span> <span class="selector-tag">a</span> &#123;</span><br><span class="line">	<span class="attribute">all</span>: initial; </span><br><span class="line">	<span class="comment">/* 将所有的属性都恢复成默认值(天生继承也不再继承) */</span></span><br><span class="line">    <span class="comment">/* 行内设置过的除外：你的层级干不过人家 */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>继承的权重是0</p>
+<p>这个不难，但是忽略很容易绕晕。其实，我们修改样式，一定要看该标签有没有被选中。<br>（1） 如果选中了，那么以上面的公式来计权重。谁大听谁的。<br>（2） 如果没有选中，那么权重是0，因为继承的权重为0.<br><img src="5.image" alt=""><br>控制继承在我们封装自己的组件的时候是会用到的，我们在封装组件需要沿用样式，有些默认情况下不可继承父元素的属性：box-sizing，这个其实用的就很多。</p>
+<p>优先级</p>
+<blockquote>
+<p>要想了解优先级，肯定得了解选择器；但是选择器非常多的，前面列举的是日常开发用的比较多，其他的你可能一辈子都用不到，这里贴出C1~C4的选择器，感兴趣的同学可以看看。</p>
+</blockquote>
+<p>定义CSS样式时，经常出现两个或更多选择器应用在同一元素上，此时，</p>
+<ul>
+<li>选择器相同，则执行层叠性（后者覆盖前者)</li>
+<li>选择器不同，就会出现优先级的问题。</li>
+</ul>
+<p>权重计算公式</p>
+<blockquote>
+<p>  关于CSS权重，我们需要一套计算公式来去计算，这个就是 CSS Specificity（特殊性）</p>
+</blockquote>
+<p>标签选择器计算权重公式继承或者 <em>0,0,0,0每个元素（标签选择器）0,0,0,1每个类，结构伪类(如:hover),属性选择器[type=”number”]0,0,1,0每个ID0,1,0,0每个行内样式 style=””1,0,0,0h1 + p::first-line0,0,0,3li &gt; a[href</em>=”beige.world”] &gt; .inline-warning0,0,2,2每个!important  重要的∞ 无穷大<br>值从左到右，左面的最大，一级大于一级，数位之间没有进制，级别之间不可超越。<br>常用的选择器记法：</p>
+<p>行内: 1,0,0,0<br>#id: 0,1,0,0<br>.class | :hover | :nth-child(): 0,0,1,0 (:hover这种一个冒号叫结构伪类)<br>::after | ::before | ::first-line: 0,0,0,1 (这种两冒号的叫伪元素，在书写的时候虽然你可以写一个冒号但是浏览器还是给你补上去了，本质上就是两冒号)</p>
+<p>权重叠加</p>
+<p>我们经常用组合选择器，是有多个基础选择器组合而成，那么此时，就会出现权重叠加。</p>
+<p>就是一个简单的加法计算</p>
+<p>div ul  li   ——&gt;      0,0,0,3<br>.nav ul li   ——&gt;      0,0,1,2<br>a:hover      —–—&gt;   0,0,1,1<br>.nav a       ——&gt;      0,0,1,1</p>
+<p>注意⚠: 数位之间没有进制 比如说： 0,0,0,5 + 0,0,0,5 = 0,0,0,10 而不是 0,0, 1, 0， 所以不会存在10个div能赶上一个类选择器的情况。</p>
+<p>important适用优先级💡<br>#id .box div {<br>    color: red !important;<br>}</p>
+<p>#id div.box div {<br>    color: green !important; // 使用这个选择器中的颜色<br>}<br>复制代码<br>通关答题</p>
+<p>下面来几道题，全对才算通过了噢😗</p>
+<style type="text/css">
+  .c1 .c2 div{  
+    color: blue;
+  }
+  div #box3 {  
+    color:green;
+  }
+  #box1 div { 
+    color:yellow;
+  }
+</style>
+</head>
+<body>
+<div id="box1" class="c1">
+  <div id="box2" class="c2">
+    <div id="box3" class="c3">
+      文字
+    </div>
+  </div>
+</div>
+</body>
+
+<p>什么颜色??yellow 上面两选择器的层级都是一样的, 后者覆盖前者<br> <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">style</span> <span class="attr">type</span>=<span class="string">"text/css"</span>&gt;</span></span><br><span class="line"><span class="css">  <span class="selector-id">#father</span> <span class="selector-id">#son</span>&#123; </span></span><br><span class="line"><span class="css">    <span class="selector-tag">color</span><span class="selector-pseudo">:blue</span>;</span></span><br><span class="line">  &#125;</span><br><span class="line"><span class="css">  <span class="selector-id">#father</span> <span class="selector-tag">p</span><span class="selector-class">.c2</span>&#123; </span></span><br><span class="line"><span class="css">    <span class="selector-tag">color</span><span class="selector-pseudo">:black</span>;</span></span><br><span class="line">  &#125;</span><br><span class="line"><span class="css">  <span class="selector-tag">div</span><span class="selector-class">.c1</span> <span class="selector-tag">p</span><span class="selector-class">.c2</span>&#123;  </span></span><br><span class="line"><span class="css">    <span class="selector-tag">color</span><span class="selector-pseudo">:red</span>;</span></span><br><span class="line">  &#125;</span><br><span class="line"><span class="css">  <span class="selector-id">#father</span>&#123;</span></span><br><span class="line"><span class="css">    <span class="selector-tag">color</span><span class="selector-pseudo">:green</span> !<span class="selector-tag">important</span>;</span></span><br><span class="line">  &#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"father"</span> <span class="attr">class</span>=<span class="string">"c1"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">p</span> <span class="attr">id</span>=<span class="string">"son"</span> <span class="attr">class</span>=<span class="string">"c2"</span>&gt;</span></span><br><span class="line">    试问这行字体是什么颜色的？</span><br><span class="line">  <span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br></pre></td></tr></table></figure><br> blue<br> <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">style</span>&gt;</span></span><br><span class="line"><span class="css">    <span class="selector-tag">div</span><span class="selector-class">.parent</span> &#123;</span></span><br><span class="line">      width: 300px;</span><br><span class="line">      height: 300px;</span><br><span class="line"><span class="css">      <span class="selector-tag">border</span>: 10<span class="selector-tag">px</span> <span class="selector-tag">solid</span> <span class="selector-id">#000</span>;</span></span><br><span class="line">      font-size: 46px;</span><br><span class="line">      text-shadow: 3px 13px 4px green;</span><br><span class="line">      box-sizing: border-box</span><br><span class="line">    &#125;</span><br><span class="line"><span class="css">    <span class="selector-tag">div</span><span class="selector-class">.child</span> &#123;</span></span><br><span class="line">      width: 200px;</span><br><span class="line">      height: 200px;</span><br><span class="line">      background-color: brown;</span><br><span class="line"><span class="css">      <span class="selector-tag">border</span>: 5<span class="selector-tag">px</span> <span class="selector-tag">solid</span> <span class="selector-id">#000</span>;</span></span><br><span class="line">      width: inherit;</span><br><span class="line">      box-sizing: inherit;</span><br><span class="line">      font-size: 80px;</span><br><span class="line">    &#125;</span><br><span class="line">  <span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"parent"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"child"</span> <span class="attr">class</span>=<span class="string">"child"</span>&gt;</span>123<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">&lt;!-- </span></span><br><span class="line"><span class="comment">    child: 字体多大? 有没有文字阴影? 真实内容的宽高是多少?</span></span><br><span class="line"><span class="comment">   --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+]]></content>
+      <categories>
+        <category>css</category>
+      </categories>
+      <tags>
+        <tag>css</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Hello World</title>
+    <url>/2020/04/27/hello-world/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>flex布局</title>
+    <url>/2020/08/12/flex%E5%B8%83%E5%B1%80/</url>
+    <content><![CDATA[<h1 id="flex"><a href="#flex" class="headerlink" title="flex"></a>flex</h1><h2 id="父项常用属性"><a href="#父项常用属性" class="headerlink" title="父项常用属性"></a>父项常用属性</h2><ul>
+<li>flex-direction：设置主轴的方向</li>
+<li>justify-content：设置主轴上的子元素排列方式</li>
+<li>flex-wrap：设置子元素是否换行</li>
+<li>align-content：设置侧轴上的子元素的排列方式（多行）</li>
+<li>align-items：设置侧轴上的子元素排列方式（单行）</li>
+<li>flex-flow：复合属性，相当于同时设置了 flex-direction 和 flex-wrap</li>
+</ul>
+<h3 id="flex-direction"><a href="#flex-direction" class="headerlink" title="flex-direction"></a>flex-direction</h3><p>在 flex 布局中，是分为主轴和侧轴两个方向，同样的叫法有 ： 行和列、x 轴和y 轴</p>
+<ul>
+<li>默认主轴方向就是 x 轴方向，水平向右</li>
+<li>默认侧轴方向就是 y 轴方向，水平向下<br><img src="1.image" alt=""></li>
+</ul>
+<blockquote>
+<p>主轴和侧轴是会变化的，就看 flex-direction 设置谁为主轴，剩下的就是侧轴。而我们的子元素是跟着主轴来排列的</p>
+</blockquote>
+<a id="more"></a>
+<h3 id="flex-wrap设置是否换行"><a href="#flex-wrap设置是否换行" class="headerlink" title="flex-wrap设置是否换行"></a>flex-wrap设置是否换行</h3><p>默认情况下，项目都排在一条线（又称”轴线”）上。flex-wrap属性定义，flex布局中默认是不换行的。</p>
+<ul>
+<li>nowrap 不换行</li>
+<li>wrap 换行</li>
+</ul>
+<h3 id="justify-content-设置主轴上的子元素排列方式"><a href="#justify-content-设置主轴上的子元素排列方式" class="headerlink" title="justify-content 设置主轴上的子元素排列方式"></a>justify-content 设置主轴上的子元素排列方式</h3><ul>
+<li>默认主轴方向就是 x 轴方向，水平向右</li>
+<li>默认侧轴方向就是 y 轴方向，水平向下<br><img src="2.image" alt=""></li>
+</ul>
+<blockquote>
+<p>主轴和侧轴是会变化的，就看 flex-direction 设置谁为主轴，剩下的就是侧轴。而我们的子元素是跟着主轴来排列的</p>
+</blockquote>
+<h3 id="flex-wrap设置是否换行-1"><a href="#flex-wrap设置是否换行-1" class="headerlink" title="flex-wrap设置是否换行"></a>flex-wrap设置是否换行</h3><p>默认情况下，项目都排在一条线（又称”轴线”）上。flex-wrap属性定义，flex布局中默认是不换行的。</p>
+<ul>
+<li>nowrap 不换行</li>
+<li>wrap 换行</li>
+</ul>
+<h3 id="justify-content-设置主轴上的子元素排列方式-1"><a href="#justify-content-设置主轴上的子元素排列方式-1" class="headerlink" title="justify-content 设置主轴上的子元素排列方式"></a>justify-content 设置主轴上的子元素排列方式</h3><p><img src="3.image" alt=""></p>
+<blockquote>
+<p>这里讲下space-around和space-evenly</p>
+</blockquote>
+<ul>
+<li>这里讲下space-around和space-evenly</li>
+</ul>
+<p><img src="4.image" alt=""></p>
+<ul>
+<li>space-evenly：项目两侧之间的间距与项目与容器两侧的间距相等，相当于除去项目宽度和容器和项目的两侧间距，剩下的平均分配了剩余宽度作为项目左右margin。</li>
+</ul>
+<p><img src="5.image" alt=""></p>
+<p><strong>设置侧轴上的子元素排列方式：align-items(单行)/align-content(多行)</strong></p>
+<p><img src="6.image" alt=""></p>
+<blockquote>
+<p>上图写能设置多行只能用于子项出现 换行 的情况（多行），在单行下是没有效果的。</p>
+</blockquote>
+<p>效果跟上面是一样的只不过是方向换了，上面是元素在主轴上排列，这个是在侧抽上，至于侧轴是不是Y轴就看你的<code>flex-direciton</code>怎么设置的了</p>
+<h2 id="子项常见属性"><a href="#子项常见属性" class="headerlink" title="子项常见属性"></a>子项常见属性</h2><ul>
+<li>flex(复合属性): 默认: flex: 0 1 auto;<ul>
+<li>flex-grow</li>
+<li>flex-shrink</li>
+<li>flex-basis</li>
+<li>align-self：控制子项自己在侧轴的排列方式</li>
+<li>order：定义子项的排列顺序(前后顺序), 0是第一个</li>
+</ul>
+</li>
+</ul>
+<h2 id="flex-grow"><a href="#flex-grow" class="headerlink" title="flex-grow"></a>flex-grow</h2><blockquote>
+<p>默认0，用于决定项目在有剩余空间的情况下是否放大，默认不放大；注意，即便设置了固定宽度，也会放大。<br><img src="7.image" alt=""></p>
+</blockquote>
+<p>假设第一个项目默认为0，第二个项目为flex-grow:2，最后一个项目为1，则第二个项目在放大时所占空间是最后项目的两倍。</p>
+<p>可以这么理解:</p>
+<ul>
+<li>flex: 1 =&gt; 在剩余的空间里我就占一份</li>
+<li>flex: 2 =&gt; 在剩余的空间里我就占两份</li>
+<li>flex: 3 =&gt; 在剩余的空间里我就占三份</li>
+</ul>
+<blockquote>
+<p>假设三个盒子分别都设置了上面的属性: 那就将剩余空间分成6份, 各占自己的份数 假设前两个没有设置, 就最后一个设置了flex: 3 === flex: 1, 那就将剩余空间都给它</p>
+</blockquote>
+<h3 id="flex-shrink"><a href="#flex-shrink" class="headerlink" title="flex-shrink"></a>flex-shrink</h3><blockquote>
+<p>默认1，用于决定项目在空间不足时是否缩小，默认项目都是1，即空间不足时大家一起等比缩小；注意，即便设置了固定宽度，也会缩小。但如果某个项目flex-shrink设置为0，则即便空间不够，自身也不缩小。</p>
+</blockquote>
+<p><img src="8.image" alt=""></p>
+<p>上图中第二个项目flex-shrink为0，所以自身不会缩小。</p>
+<h3 id="flex-basis"><a href="#flex-basis" class="headerlink" title="flex-basis"></a>flex-basis</h3><blockquote>
+<p>默认auto，用于设置项目宽度，默认auto时，项目会保持默认宽度，或者以width为自身的宽度，但如果设置了flex-basis，权重会width属性高，因此会覆盖widtn属性。</p>
+</blockquote>
+<p><img src="9.image" alt=""></p>
+<p>上图中先设置了flex-basis属性，后设置了width属性，但宽度依旧以flex-basis属性为准。</p>
+<blockquote>
+<p>注意⚠: 如果当容器中有多个盒子并且还宽度100%, flex-basis会被影响, 如下图</p>
+</blockquote>
+<p><img src="10.image" alt=""></p>
+<p>解决办法就是在我们设置<code>flex-basis</code>宽度时, 最好给他设置<code>flex-shrink</code>为0不缩放</p>
+]]></content>
+      <categories>
+        <category>css</category>
+      </categories>
+      <tags>
+        <tag>css</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>transform</title>
+    <url>/2020/08/28/transform/</url>
+    <content><![CDATA[<h1 id="transform"><a href="#transform" class="headerlink" title="transform"></a>transform</h1><p>2D的属性相信大家都会用了, 本文主要深究transform的3D属性</p>
+<ul>
+<li>透视：<code>perspctive</code></li>
+<li>3D呈现：<code>transfrom-style</code></li>
+<li>3D 位移：<code>translate3d(x, y, z)</code></li>
+<li>3D旋转：<code>rotate3d(x, y, z)</code></li>
+</ul>
+<h2 id="透视-perspective"><a href="#透视-perspective" class="headerlink" title="透视(perspective)"></a>透视(perspective)</h2><blockquote>
+<p>在讲3D之间先来了解一下透视(视距)，只有了解了透视我们才能理解3D的物体投影在2D平面上</p>
+</blockquote>
+<ul>
+<li>透视也称为视距，所谓的视距就是人的眼睛到屏幕的距离</li>
+<li>实际上模仿人类的视觉位置，可视为安排一直眼睛去看</li>
+<li>距离透视点越近的在电脑平面成像越大，越远成像越小</li>
+<li>透视的单位是像素</li>
+</ul>
+<a id="more"></a>
+<blockquote>
+<p>注意: 透视需要写在被视察元素的父盒子上面<br><img src="1.image" alt=""></p>
+</blockquote>
+<ul>
+<li>d：就是视距，视距就是指人的眼睛到屏幕的距离</li>
+<li>z：就是 z 轴，z 轴越大(正值)，我们看到的物体就越大</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">给实例的父元素设置: perspective: 200px;</span><br></pre></td></tr></table></figure>
+
+<p><img src="2.image" alt=""></p>
+<p>上面我们在div的父盒子上设置了<code>perspective</code>，也就是说从3D成像的角度来讲我们人眼距离屏幕div是200的视距，translate3D设置Z轴让div往前挪了100，视距变小距离我们人眼距离也就越小，所以看到的div也就变大了。 （可以想像成在500米远看见的人， 和5米看见的人。）</p>
+<h2 id="translate3d-x-y-z"><a href="#translate3d-x-y-z" class="headerlink" title="translate3d(x, y, z)"></a>translate3d(x, y, z)</h2><p><strong>3D的特点</strong></p>
+<ul>
+<li>近大远小</li>
+<li>物体和面遮挡不可见</li>
+</ul>
+<p><strong>三维坐标系</strong></p>
+<ul>
+<li>x 轴：水平向右 – 注意：x 轴右边是正值，左边是负值</li>
+<li>y 轴：垂直向下 – 注意：y 轴下面是正值，上面是负值</li>
+<li>z 轴：垂直屏幕 – 注意：往外边的是正值，往里面的是负值</li>
+</ul>
+<p><img src="3.image" alt=""></p>
+<p><code>3D</code><strong>呈现 transform-style</strong></p>
+<p>transform-style：控制子元素是否开启三维立体环境，代码写给父级，但是影响的是子盒子</p>
+<ul>
+<li>transform-style: flat 代表子元素不开启 3D 立体空间，默认的</li>
+<li>transform-style: preserve-3d 子元素开启立体空间</li>
+</ul>
+<p><img src="4.image" alt=""></p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line">body &#123;</span><br><span class="line">  perspective: 500px;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.box &#123;</span><br><span class="line">  position: relative;</span><br><span class="line">  width: 200px;</span><br><span class="line">  height: 200px;</span><br><span class="line">  margin: 100px auto;</span><br><span class="line">  transition: all 2s;</span><br><span class="line">  /* 让子元素保持3d立体空间环境 */</span><br><span class="line">  transform-style: preserve-3d;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.box:hover &#123;</span><br><span class="line">  transform: rotateY(60deg);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.box div &#123;</span><br><span class="line">  position: absolute;</span><br><span class="line">  top: 0;</span><br><span class="line">  left: 0;</span><br><span class="line">  width: 100%;</span><br><span class="line">  height: 100%;</span><br><span class="line">  background-color: pink;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.box div:last-child &#123;</span><br><span class="line">  background-color: purple;</span><br><span class="line">  transform: rotateX(60deg);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="rotate3d-x-y-z"><a href="#rotate3d-x-y-z" class="headerlink" title="rotate3d(x, y, z)"></a>rotate3d(x, y, z)</h2><blockquote>
+<p>3D 旋转指可以让元素在三维平面内沿着 x 轴、y 轴、z 轴 或者自定义轴进行旋转</p>
+</blockquote>
+<ul>
+<li>transform: rotate3d(x, y, z, 45deg)` – 沿着自定义轴旋转 45 deg 为角度<br><img src="5.image" alt=""></li>
+</ul>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">li</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"box"</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"front"</span>&gt;</span>公众号:<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"bottom"</span>&gt;</span>前端自学驿站<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ul li &#123;</span><br><span class="line">	float: left;</span><br><span class="line">	margin: 0 5px;</span><br><span class="line">	width: 120px;</span><br><span class="line">	height: 35px;</span><br><span class="line">	list-style: none;</span><br><span class="line">	&#x2F;* 一会我们需要给box 旋转 也需要透视 干脆给li加 里面的子盒子都有透视效果 *&#x2F;</span><br><span class="line">	perspective: 500px;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.box &#123;</span><br><span class="line">	position: relative;</span><br><span class="line">	width: 100%;</span><br><span class="line">	height: 100%;</span><br><span class="line">	transform-style: preserve-3d;</span><br><span class="line">	transition: all .4s;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.box:hover &#123;</span><br><span class="line">	transform: rotateX(90deg);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.front,</span><br><span class="line">.bottom &#123;</span><br><span class="line">	position: absolute;</span><br><span class="line">	left: 0;</span><br><span class="line">	top: 0;</span><br><span class="line">	width: 100%;</span><br><span class="line">	height: 100%;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.front &#123;</span><br><span class="line">	background-color: pink;</span><br><span class="line">	z-index: 1;</span><br><span class="line">	transform: translateZ(17.5px);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.bottom &#123;</span><br><span class="line">	background-color: purple;</span><br><span class="line">	&#x2F;* 这个x轴一定是负值 *&#x2F;</span><br><span class="line">	&#x2F;* 我们如果有移动 或者其他样式，必须先写我们的移动 *&#x2F;</span><br><span class="line">	transform: translateY(17.5px) rotateX(-90deg);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+]]></content>
+      <categories>
+        <category>css</category>
+      </categories>
+      <tags>
+        <tag>css</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>vue nextTick</title>
+    <url>/2020/09/17/vue-nextTick/</url>
+    <content><![CDATA[<h1 id="nextTick"><a href="#nextTick" class="headerlink" title="nextTick"></a>nextTick</h1><h2 id="nextTick的使用"><a href="#nextTick的使用" class="headerlink" title="nextTick的使用"></a>nextTick的使用</h2><p>vue中dom的更像并不是实时的，当数据改变后，vue会把渲染<strong>watcher</strong>添加到异步队列，异步执行，同步代码执行完成后再统一修改dom，我们看下面的代码。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">"box"</span>&gt;&#123;&#123;msg&#125;&#125;&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>template&gt;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  name: <span class="string">'index'</span>,</span><br><span class="line">  data () &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      msg: <span class="string">'hello'</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  mounted () &#123;</span><br><span class="line">    <span class="keyword">this</span>.msg = <span class="string">'world'</span></span><br><span class="line">    <span class="keyword">let</span> box = <span class="built_in">document</span>.getElementsByClassName(<span class="string">'box'</span>)[<span class="number">0</span>]</span><br><span class="line">    <span class="built_in">console</span>.log(box.innerHTML) <span class="comment">// hello</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<p>可以看到，<strong>修改数据</strong>后并不会<strong>立即更新dom</strong> ，dom的更新是<strong>异步</strong>的，无法通过同步代码获取，需要使用<strong>nextTick</strong>，在下一次事件循环中获取。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">this</span>.msg = <span class="string">'world'</span></span><br><span class="line"><span class="keyword">let</span> box = <span class="built_in">document</span>.getElementsByClassName(<span class="string">'box'</span>)[<span class="number">0</span>]</span><br><span class="line"><span class="keyword">this</span>.$nextTick(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(box.innerHTML) <span class="comment">// world</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>如果我们需要获取数据更新后的dom信息，比如动态获取宽高、位置信息等，需要使用nextTick</p>
+<h2 id="数据变化dom更新与nextTick的原理分析"><a href="#数据变化dom更新与nextTick的原理分析" class="headerlink" title="数据变化dom更新与nextTick的原理分析"></a>数据变化dom更新与nextTick的原理分析</h2><h3 id="数据变化"><a href="#数据变化" class="headerlink" title="数据变化"></a>数据变化</h3><p>vue双向数据绑定依赖于ES5的<code>Object.defineProperty</code>，在数据初始化的时候，通过<code>Object.defineProperty</code>为每一个属性创建<code>getter</code>与<code>setter</code>，把数据变成响应式数据。对属性值进行修改操作时，如<code>this.msg = world</code>，实际上会触发<code>setter</code>。下面看源码，为方便越读，源码有删减。</p>
+<p><img src="1" alt=""></p>
+<p>数据改变触发<code>set</code>函数</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">Object</span>.defineProperty(obj, key, &#123;</span><br><span class="line">  enumerable: <span class="literal">true</span>,</span><br><span class="line">  configurable: <span class="literal">true</span>,</span><br><span class="line">  <span class="comment">// 数据修改后触发set函数 经过一系列操作 完成dom更新</span></span><br><span class="line">  <span class="keyword">set</span>: function reactiveSetter (newVal) &#123;</span><br><span class="line">    <span class="keyword">const</span> value = getter ? getter.call(obj) : val</span><br><span class="line">    <span class="keyword">if</span> (getter &amp;&amp; !setter) <span class="keyword">return</span></span><br><span class="line">    <span class="keyword">if</span> (setter) &#123;</span><br><span class="line">      setter.call(obj, newVal)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      val = newVal</span><br><span class="line">    &#125;</span><br><span class="line">    childOb = !shallow &amp;&amp; observe(newVal)</span><br><span class="line">    dep.notify() <span class="comment">// 执行dep notify方法</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>执行<code>dep.notify</code>方法</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="class"><span class="keyword">class</span> <span class="title">Dep</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span> () &#123;</span><br><span class="line">    <span class="keyword">this</span>.id = uid++</span><br><span class="line">    <span class="keyword">this</span>.subs = []</span><br><span class="line">  &#125;</span><br><span class="line">  notify () &#123;</span><br><span class="line">    <span class="keyword">const</span> subs = <span class="keyword">this</span>.subs.slice()</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>, l = subs.length; i &lt; l; i++) &#123;</span><br><span class="line">      <span class="comment">// 实际上遍历执行了subs数组中元素的update方法</span></span><br><span class="line">      subs[i].update()</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当数据被引用时，如<code>&lt;div&gt;&lt;/div&gt;</code> ，会执行<code>get</code>方法，并向<code>subs</code>数组中添加渲染<code>Watcher</code>，当数据被改变时执行<code>Watcher</code>的<code>update</code>方法执行数据更新。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">update () &#123;</span><br><span class="line">  <span class="comment">/* istanbul ignore else */</span></span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">this</span>.lazy) &#123;</span><br><span class="line">    <span class="keyword">this</span>.dirty = <span class="literal">true</span></span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">this</span>.sync) &#123;</span><br><span class="line">    <span class="keyword">this</span>.run()</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    queueWatcher(<span class="keyword">this</span>) <span class="comment">//执行queueWatcher</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>update 方法最终执行<code>queueWatcher</code></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">queueWatcher</span> (<span class="params">watcher: Watcher</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> id = watcher.id</span><br><span class="line">  <span class="keyword">if</span> (has[id] == <span class="literal">null</span>) &#123;</span><br><span class="line">    has[id] = <span class="literal">true</span></span><br><span class="line">    <span class="keyword">if</span> (!flushing) &#123;</span><br><span class="line">      queue.push(watcher)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="comment">// if already flushing, splice the watcher based on its id</span></span><br><span class="line">      <span class="comment">// if already past its id, it will be run next immediately.</span></span><br><span class="line">      <span class="keyword">let</span> i = queue.length - <span class="number">1</span></span><br><span class="line">      <span class="keyword">while</span> (i &gt; index &amp;&amp; queue[i].id &gt; watcher.id) &#123;</span><br><span class="line">        i--</span><br><span class="line">      &#125;</span><br><span class="line">      queue.splice(i + <span class="number">1</span>, <span class="number">0</span>, watcher)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// queue the flush</span></span><br><span class="line">    <span class="keyword">if</span> (!waiting) &#123;</span><br><span class="line">      <span class="comment">// 通过waiting 保证nextTick只执行一次</span></span><br><span class="line">      waiting = <span class="literal">true</span></span><br><span class="line">      <span class="comment">// 最终queueWatcher 方法会把flushSchedulerQueue 传入到nextTick中执行</span></span><br><span class="line">      nextTick(flushSchedulerQueue)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行<code>flushSchedulerQueue</code>方法</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">flushSchedulerQueue</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  currentFlushTimestamp = getNow()</span><br><span class="line">  flushing = <span class="literal">true</span></span><br><span class="line">  <span class="keyword">let</span> watcher, id</span><br><span class="line">  ...</span><br><span class="line">  <span class="keyword">for</span> (index = <span class="number">0</span>; index &lt; queue.length; index++) &#123;</span><br><span class="line">    watcher = queue[index]</span><br><span class="line">    <span class="keyword">if</span> (watcher.before) &#123;</span><br><span class="line">      watcher.before()</span><br><span class="line">    &#125;</span><br><span class="line">    id = watcher.id</span><br><span class="line">    has[id] = <span class="literal">null</span></span><br><span class="line">    <span class="comment">// 遍历执行渲染watcher的run方法 完成视图更新</span></span><br><span class="line">    watcher.run()</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 重置waiting变量 </span></span><br><span class="line">  resetSchedulerState()</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>也就是说当数据变化最终会把<code>flushSchedulerQueue</code>传入到<code>nextTick</code>中执行<code>flushSchedulerQueue</code>函数会遍历执行<code>watcher.run()</code>方法，<code>watcher.run()</code>方法最终会完成视图更新，接下来我们看关键的<code>nextTick</code>方法到底是啥</p>
+<h3 id="nextTick-1"><a href="#nextTick-1" class="headerlink" title="nextTick"></a>nextTick</h3><p><code>nextTick</code>方法会被传进来的回调<code>push</code>进<code>callbacks</code>数组，然后执行<code>timerFunc</code>方法</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">nextTick</span> (<span class="params">cb?: Function, ctx?: Object</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> _resolve</span><br><span class="line">  <span class="comment">// push进callbacks数组</span></span><br><span class="line">  callbacks.push(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">     cb.call(ctx)</span><br><span class="line">  &#125;)</span><br><span class="line">  <span class="keyword">if</span> (!pending) &#123;</span><br><span class="line">    pending = <span class="literal">true</span></span><br><span class="line">    <span class="comment">// 执行timerFunc方法</span></span><br><span class="line">    timerFunc()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>来看看<code>timerFunc</code></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> timerFunc</span><br><span class="line"><span class="comment">// 判断是否原生支持Promise</span></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">typeof</span> <span class="built_in">Promise</span> !== <span class="string">'undefined'</span> &amp;&amp; isNative(<span class="built_in">Promise</span>)) &#123;</span><br><span class="line">  <span class="keyword">const</span> p = <span class="built_in">Promise</span>.resolve()</span><br><span class="line">  timerFunc = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// 如果原生支持Promise 用Promise执行flushCallbacks</span></span><br><span class="line">    p.then(flushCallbacks)</span><br><span class="line">    <span class="keyword">if</span> (isIOS) setTimeout(noop)</span><br><span class="line">  &#125;</span><br><span class="line">  isUsingMicroTask = <span class="literal">true</span></span><br><span class="line"><span class="comment">// 判断是否原生支持MutationObserver</span></span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> (!isIE &amp;&amp; <span class="keyword">typeof</span> MutationObserver !== <span class="string">'undefined'</span> &amp;&amp; (</span><br><span class="line">  isNative(MutationObserver) ||</span><br><span class="line">  <span class="comment">// PhantomJS and iOS 7.x</span></span><br><span class="line">  MutationObserver.toString() === <span class="string">'[object MutationObserverConstructor]'</span></span><br><span class="line">)) &#123;</span><br><span class="line">  <span class="keyword">let</span> counter = <span class="number">1</span></span><br><span class="line">  <span class="comment">// 如果原生支持MutationObserver 用MutationObserver执行flushCallbacks</span></span><br><span class="line">  <span class="keyword">const</span> observer = <span class="keyword">new</span> MutationObserver(flushCallbacks)</span><br><span class="line">  <span class="keyword">const</span> textNode = <span class="built_in">document</span>.createTextNode(<span class="built_in">String</span>(counter))</span><br><span class="line">  observer.observe(textNode, &#123;</span><br><span class="line">    characterData: <span class="literal">true</span></span><br><span class="line">  &#125;)</span><br><span class="line">  timerFunc = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    counter = (counter + <span class="number">1</span>) % <span class="number">2</span></span><br><span class="line">    textNode.data = <span class="built_in">String</span>(counter)</span><br><span class="line">  &#125;</span><br><span class="line">  isUsingMicroTask = <span class="literal">true</span></span><br><span class="line"><span class="comment">// 判断是否原生支持setImmediate </span></span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">typeof</span> setImmediate !== <span class="string">'undefined'</span> &amp;&amp; isNative(setImmediate)) &#123;</span><br><span class="line">  timerFunc = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// 如果原生支持setImmediate  用setImmediate执行flushCallbacks</span></span><br><span class="line">    setImmediate(flushCallbacks)</span><br><span class="line">  &#125;</span><br><span class="line"><span class="comment">// 都不支持的情况下使用setTimeout 0</span></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  timerFunc = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// 使用setTimeout执行flushCallbacks</span></span><br><span class="line">    setTimeout(flushCallbacks, <span class="number">0</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// flushCallbacks 最终执行nextTick 方法传进来的回调函数</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">flushCallbacks</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  pending = <span class="literal">false</span></span><br><span class="line">  <span class="keyword">const</span> copies = callbacks.slice(<span class="number">0</span>)</span><br><span class="line">  callbacks.length = <span class="number">0</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; copies.length; i++) &#123;</span><br><span class="line">    copies[i]()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看出timerFunc的定义优先顺序<code>macroTask &lt;-- microTask</code>，在没有Dom的环境中，使用<code>microTask</code>，比如<code>weex</code></p>
+<p><strong>setImmediate、MessageChannel VS setTimeout</strong></p>
+<p>我们是优先定义 <code>setImmediate</code>、<code>MessageChannel</code>为什么要优先用他们创建而不是<code>setTimeout</code>？<br>HTML5中规定<code>setTimeout</code>的最小时间延迟是<code>4ms</code>，也就是说理想环境下异步回调最快也是<code>4ms</code>才能触发。Vue使用这么多函数来模拟异步任务，其目的只有一个，就是让回调异步且尽早调用。而<code>MessageChannel</code> 和 <code>setImmediate</code> 的延迟明显是小于<code>setTimeout</code>的</p>
+<p>现在有这样的一种情况，<code>mounted的</code>时候<code>test</code>的值会被<code>++</code>循环执行1000次。 每次<code>++</code>时，都会根据响应式触发<code>setter-&gt;Dep-&gt;Watcher-&gt;update-&gt;run</code>。 如果这时候没有异步更新视图，那么每次<code>++</code>都会直接操作DOM更新视图，这是非常消耗性能的。 所以Vue实现了一个<code>queue</code>队列，在下一个<code>Tick</code>（或者是当前Tick的微任务阶段）的时候会统一执行<code>queue</code>中<code>Watcher</code>的<code>run</code>。同时，拥有相同<code>id</code>的<code>Watcher</code>不会被重复加入到该<code>queue</code>中去，所以不会执行1000次<code>Watcher</code>的<code>run</code>。最终更新视图只会直接将<code>test</code>对应的DOM的0变成1000。 保证更新视图操作DOM的动作是在当前栈执行完以后下一个<code>Tick</code>（或者是当前<code>Tick</code>的微任务阶段）的时候调用，大大优化了性能。</p>
+<p>nextTick会优先使用<code>microTask</code>, 其次是<code>macroTask</code> 。</p>
+<p>也就是说<code>nextTick</code>中的任务，实际上会异步执行，<code>nextTick(callback)</code>类似于<br><code>Promise.resolve().then(callback)</code>，或者<code>setTimeout(callback, 0)</code>。</p>
+<p>也就是说vue的视图更新 <code>nextTick(flushSchedulerQueue)</code>等同于<code>setTimeout(flushSchedulerQueue, 0)</code>，会异步执行<br><code>flushSchedulerQueue</code>函数，所以我们在<code>this.msg = hello</code> 并不会立即更新dom。</p>
+<p>要想在dom更新后读取dom信息，我们需要在<strong>本次异步任务创建之后创建一个异步任务</strong>。</p>
+<p><img src="2" alt=""></p>
+<p>如果我们在数据修改前nextTick ，那么我们添加的异步任务会在渲染的异步任务之前执行，拿不到更新后的dom。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">"box"</span>&gt;&#123;&#123;msg&#125;&#125;&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  name: <span class="string">'index'</span>,</span><br><span class="line">  data () &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      msg: <span class="string">'hello'</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  mounted () &#123;</span><br><span class="line">    <span class="keyword">this</span>.$nextTick(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="built_in">console</span>.log(box.innerHTML) <span class="comment">// hello</span></span><br><span class="line">    &#125;)</span><br><span class="line">    <span class="keyword">this</span>.msg = <span class="string">'world'</span></span><br><span class="line">    <span class="keyword">let</span> box = <span class="built_in">document</span>.getElementsByClassName(<span class="string">'box'</span>)[<span class="number">0</span>]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>vue为了保证性能，会把dom修改添加到异步任务，所有同步代码执行完成后再统一修改dom，一次事件循环中的多次数据修改只会触发一次<code>watcher.run()</code>。也就是通过<code>nextTick</code>，<code>nextTick</code>会优先使用<code>microTask</code>创建异步任务。vue项目中如果需要获取修改后的dom信息，需要通过<code>nextTick</code>在dom更新任务之后创建一个异步任务。如官网所说，<code>nextTick</code>会在下次 DOM 更新循环结束之后执行延迟回调。</p>
+]]></content>
+      <categories>
+        <category>vue</category>
+      </categories>
+      <tags>
+        <tag>vue</tag>
+        <tag>vue源码</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>vueMixin</title>
+    <url>/2020/09/28/vueMixin/</url>
+    <content><![CDATA[<h1 id="mixin-源码解析"><a href="#mixin-源码解析" class="headerlink" title="mixin 源码解析"></a>mixin 源码解析</h1><p>先从<code>Vue.mixin</code>入手看源码</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// vue/src/core/global-api/mixin.js</span></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">initMixin</span> (<span class="params">Vue: GlobalAPI</span>) </span>&#123;</span><br><span class="line">  Vue.mixin = <span class="function"><span class="keyword">function</span> (<span class="params">mixin: Object</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.options = mergeOptions(<span class="keyword">this</span>.options, mixin)</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们在使用Vue.mixin的时候传入了一个对象，也就是源码中的形参mixin，然后调用<code>mergeOptions</code>方法将全局基础options和传入的mixin进行合并</p>
+<p>那么全局的基础options有什么呢？</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// vue/src/core/global-api/index.js</span></span><br><span class="line">Vue.options = <span class="built_in">Object</span>.create(<span class="literal">null</span>)</span><br><span class="line">ASSET_TYPES.forEach(<span class="function"><span class="params">type</span> =&gt;</span> &#123;</span><br><span class="line">Vue.options[type + <span class="string">'s'</span>] = <span class="built_in">Object</span>.create(<span class="literal">null</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>其中ASSET_TYPES是[‘component’, ‘directive’, ‘filter’], 也就是全局的基础options是’component’, ‘directive’, ‘filter’</p>
+<p>我们继续来看下<code>mergeOptions</code>方法是如何进行合并的(代码有删减)</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// vue/src/core/util/options.js</span></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">mergeOptions</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  parent: Object,</span></span></span><br><span class="line"><span class="function"><span class="params">  child: Object,</span></span></span><br><span class="line"><span class="function"><span class="params">  vm?: Component</span></span></span><br><span class="line"><span class="function"><span class="params"></span>): <span class="title">Object</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (child.mixins) &#123; <span class="comment">// 判断有没有mixin 也就是mixin里面挂mixin的情况 有的话递归进行合并</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>, l = child.mixins.length; i &lt; l; i++) &#123;</span><br><span class="line">    parent = mergeOptions(parent, child.mixins[i], vm)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> options = &#123;&#125; </span><br><span class="line">  <span class="keyword">let</span> key</span><br><span class="line">  <span class="keyword">for</span> (key <span class="keyword">in</span> parent) &#123;</span><br><span class="line">    mergeField(key) <span class="comment">// 先遍历parent的key 调对应的strats[XXX]方法进行合并</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">for</span> (key <span class="keyword">in</span> child) &#123;</span><br><span class="line">    <span class="keyword">if</span> (!hasOwn(parent, key)) &#123; <span class="comment">// 如果parent已经处理过某个key 就不处理了</span></span><br><span class="line">      mergeField(key) <span class="comment">// 处理child中的key 也就parent中没有处理过的key</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">mergeField</span> (<span class="params">key</span>) </span>&#123;</span><br><span class="line">      <span class="comment">//defaultStrat，也就是默认策略，为一个函数，功能为当子策略没有时使用父策略，当有相应的策略比如directive component filter  data computed等等会调用相应的更新策略</span></span><br><span class="line">    <span class="keyword">const</span> strat = strats[key] || defaultStrat</span><br><span class="line">    options[key] = strat(parent[key], child[key], vm, key) <span class="comment">// 根据不同类型的options调用strats中不同的方法进行合并再赋值到options的同名属性上</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> options</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上述代码的作用主要是这3点</p>
+<ul>
+<li>优先递归处理 mixins</li>
+</ul>
+<ul>
+<li>先遍历合并 parent 中的key，调用mergeField方法进行合并，然后保存在变量options</li>
+</ul>
+<ul>
+<li>再遍历 child，合并补上 parent 中没有的key，调用mergeField方法进行合并，保存在变量options</li>
+</ul>
+<p>其实核心在于strats中对应的不同类型的处理方法，我们接下来分为几种类型来看下对应的合并策略</p>
+<h2 id="替换型"><a href="#替换型" class="headerlink" title="替换型"></a>替换型</h2><p>props、methods、inject、computed属于替换式，我们来看下代码</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">strats.props =</span><br><span class="line">strats.methods =</span><br><span class="line">strats.inject =</span><br><span class="line">strats.computed = <span class="function"><span class="keyword">function</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  parentVal: ?Object,</span></span></span><br><span class="line"><span class="function"><span class="params">  childVal: ?Object,</span></span></span><br><span class="line"><span class="function"><span class="params">  vm?: Component,</span></span></span><br><span class="line"><span class="function"><span class="params">  key: string</span></span></span><br><span class="line"><span class="function"><span class="params"></span>): ?<span class="title">Object</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (!parentVal) <span class="keyword">return</span> childVal <span class="comment">// 如果parentVal没有值，直接返回childVal</span></span><br><span class="line">  <span class="keyword">const</span> ret = <span class="built_in">Object</span>.create(<span class="literal">null</span>) <span class="comment">// 创建一个第三方对象 ret</span></span><br><span class="line">  extend(ret, parentVal) <span class="comment">// extend方法实际是把parentVal可以被枚举的属性复制到ret中</span></span><br><span class="line">  <span class="keyword">if</span> (childVal) extend(ret, childVal) <span class="comment">// 把childVal的属性复制到ret中</span></span><br><span class="line">  <span class="keyword">return</span> ret</span><br><span class="line">&#125;</span><br><span class="line">strats.provide = mergeDataOrFn</span><br></pre></td></tr></table></figure>
+
+<p>从上述代码可以看到props、methods、inject、computed的合并策略都是将新的同名参数替代旧的参数，也就是所说的替换型</p>
+<h2 id="合并型"><a href="#合并型" class="headerlink" title="合并型"></a>合并型</h2><p>data属于合并型，我们将源码简写一下</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">strats.data = <span class="function"><span class="keyword">function</span>(<span class="params">parentVal, childVal, vm</span>) </span>&#123;    </span><br><span class="line">    <span class="keyword">return</span> mergeDataOrFn(</span><br><span class="line">        parentVal, childVal, vm</span><br><span class="line">    )</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">mergeDataOrFn</span>(<span class="params">parentVal, childVal, vm</span>) </span>&#123;    </span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> <span class="title">mergedInstanceDataFn</span>(<span class="params"></span>) </span>&#123;        </span><br><span class="line">        <span class="keyword">var</span> childData = childVal.call(vm, vm) <span class="comment">// 执行data挂的函数得到对象</span></span><br><span class="line">        <span class="keyword">var</span> parentData = parentVal.call(vm, vm)        </span><br><span class="line">        <span class="keyword">if</span> (childData) &#123;            </span><br><span class="line">            <span class="keyword">return</span> mergeData(childData, parentData) <span class="comment">// 将2个对象进行合并                                 </span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;            </span><br><span class="line">            <span class="keyword">return</span> parentData <span class="comment">// 如果没有childData 直接返回parentData</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">mergeData</span>(<span class="params">to, from</span>) </span>&#123;    </span><br><span class="line">    <span class="keyword">if</span> (!<span class="keyword">from</span>) <span class="keyword">return</span> to    </span><br><span class="line">    <span class="keyword">var</span> key, toVal, fromVal;    </span><br><span class="line">    <span class="keyword">var</span> keys = <span class="built_in">Object</span>.keys(<span class="keyword">from</span>);   </span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; keys.length; i++) &#123;</span><br><span class="line">        key = keys[i];</span><br><span class="line">        toVal = to[key];</span><br><span class="line">        fromVal = <span class="keyword">from</span>[key];    </span><br><span class="line">        <span class="comment">// 如果不存在这个属性，就重新设置</span></span><br><span class="line">        <span class="keyword">if</span> (!to.hasOwnProperty(key)) &#123;</span><br><span class="line">            <span class="keyword">set</span>(to, key, fromVal);</span><br><span class="line">        &#125;      </span><br><span class="line">        // 存在相同属性，合并对象</span><br><span class="line">        else if (typeof toVal =="object" &amp;&amp; typeof fromVal =="object") &#123;</span><br><span class="line">            mergeData(toVal, fromVal);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;    </span><br><span class="line">    <span class="keyword">return</span> to</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从代码可以看到这里遍历了要合并的 data 的所有属性，然后根据不同情况进行合并：</p>
+<ul>
+<li>当目标 data 对象不包含当前属性时，调用 set 方法进行合并，后面讲 set。</li>
+<li>当目标 data 对象包含当前属性并且当前值为纯对象时，递归合并当前对象值，这样做是为了防止对象存在新增属性。</li>
+</ul>
+<p>set方法其实就是一些合并重新赋值的方法，这里就不展开来说了</p>
+<h2 id="队列型"><a href="#队列型" class="headerlink" title="队列型"></a>队列型</h2><p>全部生命周期函数和watch都是队列型合并策略</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">mergeHook</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  parentVal: ?Array&lt;Function&gt;,</span></span></span><br><span class="line"><span class="function"><span class="params">  childVal: ?Function | ?Array&lt;Function&gt;</span></span></span><br><span class="line"><span class="function"><span class="params"></span>): ?<span class="title">Array</span>&lt;<span class="title">Function</span>&gt; </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> childVal</span><br><span class="line">    ? parentVal</span><br><span class="line">      ? parentVal.concat(childVal)</span><br><span class="line">      : <span class="built_in">Array</span>.isArray(childVal)</span><br><span class="line">        ? childVal</span><br><span class="line">        : [childVal]</span><br><span class="line">    : parentVal</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">LIFECYCLE_HOOKS.forEach(<span class="function"><span class="params">hook</span> =&gt;</span> &#123;</span><br><span class="line">  strats[hook] = mergeHook</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>代码比较简单，Vue 实例的生命周期钩子被合并为一个数组，然后正序遍历一次执行。watch的策略差不多，这里就不展开了</p>
+<h2 id="叠加型"><a href="#叠加型" class="headerlink" title="叠加型"></a>叠加型</h2><p>component、directives、filters属于叠加型的策略，但是业务中用的是真的少</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">strats.components=</span><br><span class="line">strats.directives=</span><br><span class="line"></span><br><span class="line">strats.filters = <span class="function"><span class="keyword">function</span> <span class="title">mergeAssets</span>(<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">    parentVal, childVal, vm, key</span></span></span><br><span class="line"><span class="function"><span class="params"></span>) </span>&#123;    </span><br><span class="line">    <span class="keyword">var</span> res = <span class="built_in">Object</span>.create(parentVal || <span class="literal">null</span>);    </span><br><span class="line">    <span class="keyword">if</span> (childVal) &#123; </span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">var</span> key <span class="keyword">in</span> childVal) &#123;</span><br><span class="line">            res[key] = childVal[key];</span><br><span class="line">        &#125;   </span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">return</span> res</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过原型链进行层层的叠加</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>在我们调用Vue.mixin的时候会通过<code>mergeOptions</code>方法将全局基础options(component’, ‘directive’, ‘filter)进行合并</li>
+</ul>
+<ul>
+<li>在mergeOptions内部优先进行mixins的递归合并，然后先父再子调用<code>mergeField</code>进行合并，不同的类型走不同的合并策略</li>
+</ul>
+<ul>
+<li>替换型策略有props、methods、inject、computed, 就是将新的同名参数替代旧的参数</li>
+</ul>
+<ul>
+<li>合并型策略是data, 通过set方法进行合并和重新赋值</li>
+</ul>
+<ul>
+<li>队列型策略有生命周期函数和watch，原理是将函数存入一个数组，然后正序遍历依次执行</li>
+</ul>
+<ul>
+<li>叠加型有component、directives、filters，将回调通过原理链联系在一起</li>
+</ul>
+]]></content>
+      <categories>
+        <category>vue</category>
+      </categories>
+      <tags>
+        <tag>vue</tag>
+        <tag>vue源码</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>webpack常用插件</title>
+    <url>/2020/09/27/webpack%E5%B8%B8%E7%94%A8%E6%8F%92%E4%BB%B6/</url>
+    <content><![CDATA[<p>clean-webpack-plugin </p>
+<p>html-webpack-plugin</p>
+<p>copy-webpack-plugin</p>
+<h1 id="开发服务器"><a href="#开发服务器" class="headerlink" title="开发服务器"></a>开发服务器</h1><p>在<strong>开发阶段</strong>，目前遇到的问题是打包、运行、调试过程过于繁琐，回顾一下我们的操作流程：</p>
+<ol>
+<li>编写代码</li>
+<li>控制台运行命令完成打包</li>
+<li>打开页面查看效果</li>
+<li>继续编写代码，回到步骤2<a id="more"></a>
+并且，我们往往希望把最终生成的代码和页面部署到服务器上，来模拟真实环境</li>
+</ol>
+<p>为了解决这些问题，webpack官方制作了一个单独的库：<strong>webpack-dev-server</strong></p>
+<p>它<strong>既不是plugin也不是loader</strong></p>
+<p>先来看看它怎么用</p>
+<ol>
+<li>安装</li>
+<li>执行<code>webpack-dev-server</code>命令</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">这个命令是专门为开发阶段服务的，真正部署的时候还是得使用webpack命令</span><br><span class="line"></span><br><span class="line">当我们执行&#96;&#96;&#96;webpack-dev-server&#96;&#96;&#96;命令后，它做了以下操作：</span><br><span class="line"></span><br><span class="line">1. 内部执行webpack命令，传递命令参数</span><br><span class="line">2. 开启watch</span><br><span class="line">3. 注册hooks：类似于plugin，webpack-dev-server会向webpack中注册一些钩子函数，主要功能如下：</span><br><span class="line">   1. 将资源列表（aseets）保存起来</span><br><span class="line">   2. 禁止webpack输出文件</span><br><span class="line">4. 用express开启一个服务器，监听某个端口，当请求到达后，根据请求的路径，给予相应的资源内容</span><br><span class="line"></span><br><span class="line">**配置**</span><br><span class="line"></span><br><span class="line">针对webpack-dev-server的配置，参考：https:&#x2F;&#x2F;www.webpackjs.com&#x2F;configuration&#x2F;dev-server&#x2F;</span><br><span class="line"></span><br><span class="line">常见配置有：</span><br><span class="line"></span><br><span class="line">- port：配置监听端口</span><br><span class="line">- proxy：配置代理，常用于跨域访问</span><br><span class="line">- stats：配置控制台输出内容</span><br><span class="line"></span><br><span class="line">file-loader: 生成依赖的文件到输出目录，然后将模块文件设置为：导出一个路径\</span><br><span class="line"></span><br><span class="line">&#96;&#96;&#96;js</span><br><span class="line">&#x2F;&#x2F;file-loader</span><br><span class="line">function loader(source)&#123;</span><br><span class="line">	&#x2F;&#x2F; source：文件内容（图片内容 buffer）</span><br><span class="line">	&#x2F;&#x2F; 1. 生成一个具有相同文件内容的文件到输出目录</span><br><span class="line">	&#x2F;&#x2F; 2. 返回一段代码   export default &quot;文件名&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>url-loader：将依赖的文件转换为：导出一个base64格式的字符串</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">//file-loader</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">loader</span>(<span class="params">source</span>)</span>&#123;</span><br><span class="line">	<span class="comment">// source：文件内容（图片内容 buffer）</span></span><br><span class="line">	<span class="comment">// 1. 根据buffer生成一个base64编码</span></span><br><span class="line">	<span class="comment">// 2. 返回一段代码   export default "base64编码"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="解决路径问题"><a href="#解决路径问题" class="headerlink" title="解决路径问题"></a>解决路径问题</h1><p>在使用file-loader或url-loader时，可能会遇到一个非常有趣的问题</p>
+<p>比如，通过webpack打包的目录结构如下：</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="string">dist</span></span><br><span class="line">    <span class="string">|——</span> <span class="string">img</span></span><br><span class="line">        <span class="string">|——</span> <span class="string">a.png</span>  <span class="comment">#file-loader生成的文件</span></span><br><span class="line">    <span class="string">|——</span> <span class="string">scripts</span></span><br><span class="line">        <span class="string">|——</span> <span class="string">main.js</span>  <span class="comment">#export default "img/a.png"</span></span><br><span class="line">    <span class="string">|——</span> <span class="string">html</span></span><br><span class="line">        <span class="string">|——</span> <span class="string">index.html</span> <span class="comment">#&lt;script src="../scripts/main.js" &gt;&lt;/script&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>这种问题发生的根本原因：模块中的路径来自于某个loader或plugin，当产生路径时，loader或plugin只有相对于dist目录的路径，并不知道该路径将在哪个资源中使用，从而无法确定最终正确的路径</p>
+<p>面对这种情况，需要依靠webpack的配置publicPath解决</p>
+<h1 id="webpack内置插件-ignore"><a href="#webpack内置插件-ignore" class="headerlink" title="webpack内置插件 {ignore}"></a>webpack内置插件 {ignore}</h1><p>所有的webpack内置插件都作为webpack的静态属性存在的，使用下面的方式即可创建一个插件对象</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> webpack = <span class="built_in">require</span>(<span class="string">"webpack"</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">new</span> webpack.插件名(options)</span><br></pre></td></tr></table></figure>
+
+<h2 id="DefinePlugin"><a href="#DefinePlugin" class="headerlink" title="DefinePlugin"></a>DefinePlugin</h2><p>全局常量定义插件，使用该插件通常定义一些常量值，例如：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">new</span> webpack.DefinePlugin(&#123;</span><br><span class="line">    PI: <span class="string">`Math.PI`</span>, <span class="comment">// PI = Math.PI</span></span><br><span class="line">    VERSION: <span class="string">`"1.0.0"`</span>, <span class="comment">// VERSION = "1.0.0"</span></span><br><span class="line">    DOMAIN: <span class="built_in">JSON</span>.stringify(<span class="string">"duyi.com"</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>这样一来，在源码中，我们可以直接使用插件中提供的常量，当webpack编译完成后，会自动替换为常量的值</p>
+<h2 id="BannerPlugin"><a href="#BannerPlugin" class="headerlink" title="BannerPlugin"></a>BannerPlugin</h2><p>它可以为每个chunk生成的文件头部添加一行注释，一般用于添加作者、公司、版权等信息</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">new</span> webpack.BannerPlugin(&#123;</span><br><span class="line">  banner: <span class="string">`</span></span><br><span class="line"><span class="string">  hash:[hash]</span></span><br><span class="line"><span class="string">  chunkhash:[chunkhash]</span></span><br><span class="line"><span class="string">  name:[name]</span></span><br><span class="line"><span class="string">  author:yuanjin</span></span><br><span class="line"><span class="string">  corporation:duyi</span></span><br><span class="line"><span class="string">  `</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="ProvidePlugin"><a href="#ProvidePlugin" class="headerlink" title="ProvidePlugin"></a>ProvidePlugin</h2><p>自动加载模块，而不必到处 import 或 require </p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">new</span> webpack.ProvidePlugin(&#123;</span><br><span class="line">  $: <span class="string">'jquery'</span>,</span><br><span class="line">  _: <span class="string">'lodash'</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>然后在我们任意源码中：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">$(<span class="string">'#item'</span>); <span class="comment">// &lt;= 起作用</span></span><br><span class="line">_.drop([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>], <span class="number">2</span>); <span class="comment">// &lt;= 起作用</span></span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>webpack</category>
+      </categories>
+      <tags>
+        <tag>webpack</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>css工程化</title>
+    <url>/2020/09/27/css%E5%B7%A5%E7%A8%8B%E5%8C%96/</url>
+    <content><![CDATA[<h1 id="css工程化概述"><a href="#css工程化概述" class="headerlink" title="css工程化概述"></a>css工程化概述</h1><h2 id="css的问题"><a href="#css的问题" class="headerlink" title="css的问题"></a>css的问题</h2><h3 id="类名冲突的问题"><a href="#类名冲突的问题" class="headerlink" title="类名冲突的问题"></a>类名冲突的问题</h3><p>当你写一个css类的时候，你是写全局的类呢，还是写多个层级选择后的类呢？</p>
+<p>你会发现，怎么都不好</p>
+<ul>
+<li>过深的层级不利于编写、阅读、压缩、复用</li>
+<li>过浅的层级容易导致类名冲突</li>
+</ul>
+<p>一旦样式多起来，这个问题就会变得越发严重，其实归根结底，就是类名冲突不好解决的问题</p>
+<a id="more"></a>
+<h3 id="重复样式"><a href="#重复样式" class="headerlink" title="重复样式"></a>重复样式</h3><p>这种问题就更普遍了，一些重复的样式值总是不断的出现在css代码中，维护起来极其困难</p>
+<p>比如，一个网站的颜色一般就那么几种：</p>
+<ul>
+<li>primary</li>
+<li>info</li>
+<li>warn</li>
+<li>error</li>
+<li>success</li>
+</ul>
+<p>如果有更多的颜色，都是从这些色调中自然变化得来，可以想象，这些颜色会到处充斥到诸如背景、文字、边框中，一旦要做颜色调整，是一个非常大的工程</p>
+<h3 id="css文件细分问题"><a href="#css文件细分问题" class="headerlink" title="css文件细分问题"></a>css文件细分问题</h3><p>在大型项目中，css也需要更细的拆分，这样有利于css代码的维护。</p>
+<p>比如，有一个做轮播图的模块，它不仅需要依赖js功能，还需要依赖css样式，既然依赖的js功能仅关心轮播图，那css样式也应该仅关心轮播图，由此类推，不同的功能依赖不同的css样式、公共样式可以单独抽离，这样就形成了不同于过去的css文件结构：文件更多、拆分的更细</p>
+<p>而同时，在真实的运行环境下，我们却希望文件越少越好，这种情况和JS遇到的情况是一致的</p>
+<p>因此，对于css，也需要工程化管理</p>
+<p>从另一个角度来说，css的工程化会遇到更多的挑战，因为css不像JS，它的语法本身经过这么多年并没有发生多少的变化（css3也仅仅是多了一些属性而已），对于css语法本身的改变也是一个工程化的课题</p>
+<h2 id="如何解决"><a href="#如何解决" class="headerlink" title="如何解决"></a>如何解决</h2><p>这么多年来，官方一直没有提出方案来解决上述问题</p>
+<p>一些第三方机构针对不同的问题，提出了自己的解决方案</p>
+<h3 id="解决类名冲突"><a href="#解决类名冲突" class="headerlink" title="解决类名冲突"></a>解决类名冲突</h3><p>一些第三方机构提出了一些方案来解决该问题，常见的解决方案如下：</p>
+<p><strong>命名约定</strong></p>
+<p>即提供一种命名的标准，来解决冲突，常见的标准有：</p>
+<ul>
+<li>BEM</li>
+<li>OOCSS</li>
+<li>AMCSS</li>
+<li>SMACSS</li>
+<li>其他</li>
+</ul>
+<p><strong>css in js</strong></p>
+<p>这种方案非常大胆，它觉得，css语言本身几乎无可救药了，干脆直接用js对象来表示样式，然后把样式直接应用到元素的style中</p>
+<p>这样一来，css变成了一个一个的对象，就可以完全利用到js语言的优势，你可以：</p>
+<ul>
+<li>通过一个函数返回一个样式对象</li>
+<li>把公共的样式提取到公共模块中返回</li>
+<li>应用js的各种特性操作对象，比如：混合、提取、拆分</li>
+<li>更多的花样</li>
+</ul>
+<blockquote>
+<p>这种方案在手机端的React Native中大行其道</p>
+</blockquote>
+<p><strong>css module</strong></p>
+<p>非常有趣和好用的css模块化方案，编写简单，绝对不重名</p>
+<p>具体的课程中详细介绍</p>
+<h3 id="解决重复样式的问题"><a href="#解决重复样式的问题" class="headerlink" title="解决重复样式的问题"></a>解决重复样式的问题</h3><p><strong>css in js</strong></p>
+<p>这种方案虽然可以利用js语言解决重复样式值的问题，但由于太过激进，很多习惯写css的开发者编写起来并不是很适应</p>
+<p><strong>预编译器</strong></p>
+<p>有些第三方搞出一套css语言的进化版来解决这个问题，它支持变量、函数等高级语法，然后经过编译器将其编译成为正常的css</p>
+<p>这种方案特别像构建工具，不过它仅针对css</p>
+<p>常见的预编译器支持的语言有：</p>
+<ul>
+<li>less</li>
+<li>sass</li>
+</ul>
+<h3 id="解决css文件细分问题"><a href="#解决css文件细分问题" class="headerlink" title="解决css文件细分问题"></a>解决css文件细分问题</h3><p>这一部分，就要依靠构建工具，例如webpack来解决了</p>
+<p>利用一些loader或plugin来打包、合并、压缩css文件</p>
+<h1 id="利用webpack拆分css-ignore"><a href="#利用webpack拆分css-ignore" class="headerlink" title="利用webpack拆分css {ignore}"></a>利用webpack拆分css {ignore}</h1><p>要拆分css，就必须把css当成像js那样的模块；要把css当成模块，就必须有一个构建工具（webpack），它具备合并代码的能力</p>
+<p>而webpack本身只能读取css文件的内容、将其当作JS代码进行分析，因此，会导致错误</p>
+<p>于是，就必须有一个loader，能够将css代码转换为js代码</p>
+<h2 id="css-loader"><a href="#css-loader" class="headerlink" title="css-loader"></a>css-loader</h2><p>css-loader的作用，就是将css代码转换为js代码</p>
+<p>它的处理原理极其简单：将css代码作为字符串导出</p>
+<p>例如：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.red</span>&#123;</span><br><span class="line">    <span class="attribute">color</span>:<span class="string">"#f40"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>经过css-loader转换后变成js代码：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = <span class="string">`.red&#123;</span></span><br><span class="line"><span class="string">    color:"#f40";</span></span><br><span class="line"><span class="string">&#125;`</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>上面的js代码是经过我简化后的，不代表真实的css-loader的转换后代码，css-loader转换后的代码会有些复杂，同时会导出更多的信息，但核心思想不变</p>
+</blockquote>
+<p>再例如：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.red</span>&#123;</span><br><span class="line">    <span class="attribute">color</span>:<span class="string">"#f40"</span>;</span><br><span class="line">    <span class="attribute">background</span>:<span class="built_in">url</span>(<span class="string">"./bg.png"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>经过css-loader转换后变成js代码：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> import1 = <span class="built_in">require</span>(<span class="string">"./bg.png"</span>);</span><br><span class="line"><span class="built_in">module</span>.exports = <span class="string">`.red&#123;</span></span><br><span class="line"><span class="string">    color:"#f40";</span></span><br><span class="line"><span class="string">    background:url("<span class="subst">$&#123;import1&#125;</span>")</span></span><br><span class="line"><span class="string">&#125;`</span>;</span><br></pre></td></tr></table></figure>
+
+<p>这样一来，经过webpack的后续处理，会把依赖<code>./bg.png</code>添加到模块列表，然后再将代码转换为</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> import1 = __webpack_require__(<span class="string">"./src/bg.png"</span>);</span><br><span class="line"><span class="built_in">module</span>.exports = <span class="string">`.red&#123;</span></span><br><span class="line"><span class="string">    color:"#f40";</span></span><br><span class="line"><span class="string">    background:url("<span class="subst">$&#123;import1&#125;</span>")</span></span><br><span class="line"><span class="string">&#125;`</span>;</span><br></pre></td></tr></table></figure>
+
+<p>再例如：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="keyword">@import</span> <span class="string">"./reset.css"</span>;</span><br><span class="line"><span class="selector-class">.red</span>&#123;</span><br><span class="line">    <span class="attribute">color</span>:<span class="string">"#f40"</span>;</span><br><span class="line">    <span class="attribute">background</span>:<span class="built_in">url</span>(<span class="string">"./bg.png"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>会转换为：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> import1 = <span class="built_in">require</span>(<span class="string">"./reset.css"</span>);</span><br><span class="line"><span class="keyword">var</span> import2 = <span class="built_in">require</span>(<span class="string">"./bg.png"</span>);</span><br><span class="line"><span class="built_in">module</span>.exports = <span class="string">`<span class="subst">$&#123;import1&#125;</span></span></span><br><span class="line"><span class="string">.red&#123;</span></span><br><span class="line"><span class="string">    color:"#f40";</span></span><br><span class="line"><span class="string">    background:url("<span class="subst">$&#123;import2&#125;</span>")</span></span><br><span class="line"><span class="string">&#125;`</span>;</span><br></pre></td></tr></table></figure>
+
+<p>总结，css-loader干了什么：</p>
+<ol>
+<li>将css文件的内容作为字符串导出</li>
+<li>将css中的其他依赖作为require导入，以便webpack分析依赖</li>
+</ol>
+<h2 id="style-loader"><a href="#style-loader" class="headerlink" title="style-loader"></a>style-loader</h2><p>由于css-loader仅提供了将css转换为字符串导出的能力，剩余的事情要交给其他loader或plugin来处理</p>
+<p>style-loader可以将css-loader转换后的代码进一步处理，将css-loader导出的字符串加入到页面的style元素中</p>
+<p>例如：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.red</span>&#123;</span><br><span class="line">    <span class="attribute">color</span>:<span class="string">"#f40"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>经过css-loader转换后变成js代码：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = <span class="string">`.red&#123;</span></span><br><span class="line"><span class="string">    color:"#f40";</span></span><br><span class="line"><span class="string">&#125;`</span></span><br></pre></td></tr></table></figure>
+
+<p>经过style-loader转换后变成：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = <span class="string">`.red&#123;</span></span><br><span class="line"><span class="string">    color:"#f40";</span></span><br><span class="line"><span class="string">&#125;`</span></span><br><span class="line"><span class="keyword">var</span> style = <span class="built_in">module</span>.exports;</span><br><span class="line"><span class="keyword">var</span> styleElem = <span class="built_in">document</span>.createElement(<span class="string">"style"</span>);</span><br><span class="line">styleElem.innerHTML = style;</span><br><span class="line"><span class="built_in">document</span>.head.appendChild(styleElem);</span><br><span class="line"><span class="built_in">module</span>.exports = &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>以上代码均为简化后的代码，并不代表真实的代码<br>style-loader有能力避免同一个样式的重复导入</p>
+</blockquote>
+<h1 id="BEM"><a href="#BEM" class="headerlink" title="BEM"></a>BEM</h1><p>BEM是一套针对css类样式的命名方法。</p>
+<blockquote>
+<p>其他命名方法还有：OOCSS、AMCSS、SMACSS等等</p>
+</blockquote>
+<p>BEM全称是：<strong>B</strong>lock <strong>E</strong>lement <strong>M</strong>odifier</p>
+<p>一个完整的BEM类名：block__element_modifier，例如：<code>banner__dot_selected</code>，可以表示：轮播图中，处于选中状态的小圆点</p>
+<p><img src="assets/2020-01-31-09-53-31.png" alt=""></p>
+<p>三个部分的具体含义为：</p>
+<ul>
+<li><strong>Block</strong>：页面中的大区域，表示最顶级的划分，例如：轮播图(<code>banner</code>)、布局(<code>layout</code>)、文章(<code>article</code>)等等</li>
+<li><strong>element</strong>：区域中的组成部分，例如：轮播图中的横幅图片(<code>banner__img</code>)、轮播图中的容器（<code>banner__container</code>）、布局中的头部(<code>layout__header</code>)、文章中的标题(<code>article_title</code>)</li>
+<li><strong>modifier</strong>：可选。通常表示状态，例如：处于展开状态的布局左边栏（<code>layout__left_expand</code>）、处于选中状态的轮播图小圆点(<code>banner__dot_selected</code>)</li>
+</ul>
+<p>在某些大型工程中，如果使用BEM命名法，还可能会增加一个前缀，来表示类名的用途，常见的前缀有：</p>
+<ul>
+<li><strong>l</strong>: layout，表示这个样式是用于布局的</li>
+<li><strong>c</strong>: component，表示这个样式是一个组件，即一个功能区域</li>
+<li><strong>u</strong>: util，表示这个样式是一个通用的、工具性质的样式</li>
+<li><strong>j</strong>: javascript，表示这个样式没有实际意义，是专门提供给js获取元素使用的</li>
+</ul>
+<h1 id="css-in-js"><a href="#css-in-js" class="headerlink" title="css in js"></a>css in js</h1><p>css in js 的核心思想是：用一个JS对象来描述样式，而不是css样式表</p>
+<p>例如下面的对象就是一个用于描述样式的对象：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> styles = &#123;</span><br><span class="line">    backgroundColor: <span class="string">"#f40"</span>,</span><br><span class="line">    color: <span class="string">"#fff"</span>,</span><br><span class="line">    width: <span class="string">"400px"</span>,</span><br><span class="line">    height: <span class="string">"500px"</span>,</span><br><span class="line">    margin: <span class="string">"0 auto"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>由于这种描述样式的方式<strong>根本就不存在类名</strong>，自然不会有类名冲突</p>
+<p>至于如何把样式应用到界面上，不是它所关心的事情，你可以用任何技术、任何框架、任何方式将它应用到界面。</p>
+<blockquote>
+<p>后续学习的vue、react都支持css in js，可以非常轻松的应用到界面</p>
+</blockquote>
+<p>css in js的特点：</p>
+<ul>
+<li><strong>绝无冲突的可能</strong>：由于它根本不存在类名，所以绝不可能出现类名冲突</li>
+<li><strong>更加灵活</strong>：可以充分利用JS语言灵活的特点，用各种招式来处理样式</li>
+<li><strong>应用面更广</strong>：只要支持js语言，就可以支持css in js，因此，在一些用JS语言开发移动端应用的时候非常好用，因为移动端应用很有可能并不支持css</li>
+<li><strong>书写不便</strong>：书写样式，特别是公共样式的时候，处理起来不是很方便</li>
+<li><strong>在页面中增加了大量冗余内容</strong>：在页面中处理css in js时，往往是将样式加入到元素的style属性中，会大量增加元素的内联样式，并且可能会有大量重复，不易阅读最终的页面代码</li>
+</ul>
+<h1 id="css-module-ignore"><a href="#css-module-ignore" class="headerlink" title="css module {ignore}"></a>css module {ignore}</h1><blockquote>
+<p>通过命名规范来限制类名太过死板，而css in js虽然足够灵活，但是书写不便。<br>css module 开辟一种全新的思路来解决类名冲突的问题</p>
+</blockquote>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>css module 遵循以下思路解决类名冲突问题：</p>
+<ol>
+<li>css的类名冲突往往发生在大型项目中</li>
+<li>大型项目往往会使用构建工具（webpack等）搭建工程</li>
+<li>构建工具允许将css样式切分为更加精细的模块</li>
+<li>同JS的变量一样，每个css模块文件中难以出现冲突的类名，冲突的类名往往发生在不同的css模块文件中</li>
+<li>只需要保证构建工具在合并样式代码后不会出现类名冲突即可</li>
+</ol>
+<p><img src="assets/2020-01-31-13-54-37.png" alt=""></p>
+<h2 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h2><p>在webpack中，作为处理css的css-loader，它实现了css module的思想，要启用css module，需要将css-loader的配置<code>modules</code>设置为<code>true</code>。</p>
+<p>css-loader的实现方式如下：</p>
+<p><img src="assets/2020-01-31-14-00-56.png" alt=""></p>
+<p>原理极其简单，开启了css module后，css-loader会将样式中的类名进行转换，转换为一个唯一的hash值。</p>
+<p>由于hash值是根据模块路径和类名生成的，因此，不同的css模块，哪怕具有相同的类名，转换后的hash值也不一样。</p>
+<p><img src="assets/2020-01-31-14-04-11.png" alt=""></p>
+<h2 id="如何应用样式"><a href="#如何应用样式" class="headerlink" title="如何应用样式"></a>如何应用样式</h2><p>css module带来了一个新的问题：源代码的类名和最终生成的类名是不一样的，而开发者只知道自己写的源代码中的类名，并不知道最终的类名是什么，那如何应用类名到元素上呢？</p>
+<p>为了解决这个问题，css-loader会导出原类名和最终类名的对应关系，该关系是通过一个对象描述的</p>
+<p><img src="assets/2020-01-31-14-08-49.png" alt=""></p>
+<p>这样一来，我们就可以在js代码中获取到css模块导出的结果，从而应用类名了</p>
+<p>style-loader为了我们更加方便的应用类名，会去除掉其他信息，仅暴露对应关系</p>
+<h2 id="其他操作"><a href="#其他操作" class="headerlink" title="其他操作"></a>其他操作</h2><h3 id="全局类名"><a href="#全局类名" class="headerlink" title="全局类名"></a>全局类名</h3><p>某些类名是全局的、静态的，不需要进行转换，仅需要在类名位置使用一个特殊的语法即可：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-pseudo">:global(.main)</span>&#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用了global的类名不会进行转换，相反的，没有使用global的类名，表示默认使用了local</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-pseudo">:local(.main)</span>&#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用了local的类名表示局部类名，是可能会造成冲突的类名，会被css module进行转换</p>
+<h3 id="如何控制最终的类名"><a href="#如何控制最终的类名" class="headerlink" title="如何控制最终的类名"></a>如何控制最终的类名</h3><p>绝大部分情况下，我们都不需要控制最终的类名，因为控制它没有任何意义</p>
+<p>如果一定要控制最终的类名，需要配置css-loader的<code>localIdentName</code></p>
+<h2 id="其他注意事项"><a href="#其他注意事项" class="headerlink" title="其他注意事项"></a>其他注意事项</h2><ul>
+<li>css module往往配合构建工具使用</li>
+<li>css module仅处理顶级类名，尽量不要书写嵌套的类名，也没有这个必要</li>
+<li>css module仅处理类名，不处理其他选择器</li>
+<li>css module还会处理id选择器，不过任何时候都没有使用id选择器的理由</li>
+<li>使用了css module后，只要能做到让类名望文知意即可，不需要遵守其他任何的命名规范</li>
+</ul>
+<h1 id="CSS预编译器-ignore"><a href="#CSS预编译器-ignore" class="headerlink" title="CSS预编译器 {ignore}"></a>CSS预编译器 {ignore}</h1><h2 id="基本原理"><a href="#基本原理" class="headerlink" title="基本原理"></a>基本原理</h2><p>编写css时，受限于css语言本身，常常难以处理一些问题：</p>
+<ul>
+<li>重复的样式值：例如常用颜色、常用尺寸</li>
+<li>重复的代码段：例如绝对定位居中、清除浮动</li>
+<li>重复的嵌套书写</li>
+</ul>
+<p>由于官方迟迟不对css语言本身做出改进，一些第三方机构开始想办法来解决这些问题</p>
+<p>其中一种方案，便是预编译器</p>
+<p>预编译器的原理很简单，即使用一种更加优雅的方式来书写样式代码，通过一个编译器，将其转换为可被浏览器识别的传统css代码</p>
+<p><img src="assets/2020-02-03-11-48-45.png" alt=""></p>
+<p>目前，最流行的预编译器有<strong>LESS</strong>和<strong>SASS</strong>，由于它们两者特别相似，因此仅学习一种即可（本课程学习LESS）</p>
+<p><img src="assets/2020-02-03-11-50-05.png" alt=""></p>
+<blockquote>
+<p>less官网：<a href="http://lesscss.org/" target="_blank" rel="noopener">http://lesscss.org/</a><br>less中文文档1（非官方）：<a href="http://lesscss.cn/" target="_blank" rel="noopener">http://lesscss.cn/</a><br>less中文文档2（非官方）：<a href="https://less.bootcss.com/" target="_blank" rel="noopener">https://less.bootcss.com/</a><br>sass官网：<a href="https://sass-lang.com/" target="_blank" rel="noopener">https://sass-lang.com/</a><br>sass中文文档1（非官方）：<a href="https://www.sass.hk/" target="_blank" rel="noopener">https://www.sass.hk/</a><br>sass中文文档2（非官方）：<a href="https://sass.bootcss.com/" target="_blank" rel="noopener">https://sass.bootcss.com/</a></p>
+</blockquote>
+<h2 id="LESS的安装和使用"><a href="#LESS的安装和使用" class="headerlink" title="LESS的安装和使用"></a>LESS的安装和使用</h2><p>从原理可知，要使用LESS，必须要安装LESS编译器</p>
+<p>LESS编译器是基于node开发的，可以通过npm下载安装</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">npm i -D less</span><br></pre></td></tr></table></figure>
+
+<p>安装好了less之后，它提供了一个CLI工具<code>lessc</code>，通过该工具即可完成编译</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">lessc less代码文件 编译后的文件</span><br></pre></td></tr></table></figure>
+
+<p>试一试:</p>
+<p>新建一个<code>index.less</code>文件，编写内容如下：</p>
+<figure class="highlight less"><table><tr><td class="code"><pre><span class="line"><span class="comment">// less代码</span></span><br><span class="line"><span class="variable">@red:</span> <span class="number">#f40</span>;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.redcolor</span> &#123;</span><br><span class="line">    <span class="attribute">color</span>: <span class="variable">@red</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行命令：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">lessc index.less index.css</span><br></pre></td></tr></table></figure>
+
+<p>可以看到编译之后的代码：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.redcolor</span> &#123;</span><br><span class="line">  <span class="attribute">color</span>: <span class="number">#f40</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="LESS的基本使用"><a href="#LESS的基本使用" class="headerlink" title="LESS的基本使用"></a>LESS的基本使用</h2><p>具体的使用见文档：<a href="https://less.bootcss.com/" target="_blank" rel="noopener">https://less.bootcss.com/</a></p>
+<ul>
+<li>变量</li>
+<li>混合</li>
+<li>嵌套</li>
+<li>运算</li>
+<li>函数</li>
+<li>作用域</li>
+<li>注释</li>
+<li>导入</li>
+</ul>
+<h1 id="PostCss-ignore"><a href="#PostCss-ignore" class="headerlink" title="PostCss {ignore}"></a>PostCss {ignore}</h1><blockquote>
+<p>本节课的内容和webpack无关！！！</p>
+</blockquote>
+<h1 id="什么是PostCss"><a href="#什么是PostCss" class="headerlink" title="什么是PostCss"></a>什么是PostCss</h1><p>学习到现在，可以看出，CSS工程化面临着诸多问题，而解决这些问题的方案多种多样。</p>
+<p>如果把CSS单独拎出来看，光是样式本身，就有很多事情要处理。</p>
+<p>既然有这么多事情要处理，何不把这些事情集中到一起统一处理呢？</p>
+<p>PostCss就是基于这样的理念出现的。</p>
+<p>PostCss类似于一个编译器，可以将样式源码编译成最终的CSS代码</p>
+<p><img src="assets/2020-02-04-14-31-33.png" alt=""></p>
+<p>看上去是不是和LESS、SASS一样呢？</p>
+<p>但PostCss和LESS、SASS的思路不同，它其实只做一些代码分析之类的事情，将分析的结果交给插件，具体的代码转换操作是插件去完成的。</p>
+<p><img src="assets/2020-02-04-14-37-51.png" alt=""></p>
+<p>官方的一张图更能说明postcss的处理流程：</p>
+<p><img src="assets/postcss-workflow.png" alt=""></p>
+<blockquote>
+<p>这一点有点像webpack，webpack本身仅做依赖分析、抽象语法树分析，其他的操作是靠插件和加载器完成的。</p>
+</blockquote>
+<p>官网地址：<a href="https://postcss.org/" target="_blank" rel="noopener">https://postcss.org/</a><br>github地址：<a href="https://github.com/postcss/postcss" target="_blank" rel="noopener">https://github.com/postcss/postcss</a></p>
+<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><p>PostCss是基于node编写的，因此可以使用npm安装</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">npm i -D postcss</span><br></pre></td></tr></table></figure>
+
+<p>postcss库提供了对应的js api用于转换代码，如果你想使用postcss的一些高级功能，或者想开发postcss插件，就要api使用postcss，api的文档地址是：<a href="http://api.postcss.org/" target="_blank" rel="noopener">http://api.postcss.org/</a></p>
+<p>不过绝大部分时候，我们都是使用者，并不希望使用代码的方式来使用PostCss</p>
+<p>因此，我们可以再安装一个postcss-cli，通过命令行来完成编译</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">npm i -D postcss-cli</span><br></pre></td></tr></table></figure>
+
+<p>postcss-cli提供一个命令，它调用postcss中的api来完成编译</p>
+<p>命令的使用方式为：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">postcss 源码文件 -o 输出文件</span><br></pre></td></tr></table></figure>
+
+<h1 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h1><p>和webpack类似，postcss有自己的配置文件，该配置文件会影响postcss的某些编译行为。</p>
+<p>配置文件的默认名称是：<code>postcss.config.js</code></p>
+<p>例如：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">    map: <span class="literal">false</span>, <span class="comment">//关闭source-map</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="插件"><a href="#插件" class="headerlink" title="插件"></a>插件</h1><p>光使用postcss是没有多少意义的，要让它真正的发挥作用，需要插件</p>
+<p>postcss的插件市场：<a href="https://www.postcss.parts/" target="_blank" rel="noopener">https://www.postcss.parts/</a></p>
+<p>下面罗列一些postcss的常用插件</p>
+<h2 id="postcss-preset-env"><a href="#postcss-preset-env" class="headerlink" title="postcss-preset-env"></a>postcss-preset-env</h2><p>过去使用postcss的时候，往往会使用大量的插件，它们各自解决一些问题</p>
+<p>这样导致的结果是安装插件、配置插件都特别的繁琐</p>
+<p>于是出现了这么一个插件<code>postcss-preset-env</code>，它称之为<code>postcss预设环境</code>，大意就是它整合了很多的常用插件到一起，并帮你完成了基本的配置，你只需要安装它一个插件，就相当于安装了很多插件了。</p>
+<p>安装好该插件后，在postcss配置中加入下面的配置</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">    plugins: &#123;</span><br><span class="line">        <span class="string">"postcss-preset-env"</span>: &#123;&#125; <span class="comment">// &#123;&#125; 中可以填写插件的配置</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>该插件的功能很多，下面一一介绍</p>
+<h3 id="自动的厂商前缀"><a href="#自动的厂商前缀" class="headerlink" title="自动的厂商前缀"></a>自动的厂商前缀</h3><p>某些新的css样式需要在旧版本浏览器中使用厂商前缀方可实现</p>
+<p>例如</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-pseudo">::placeholder</span> &#123;</span><br><span class="line">    <span class="attribute">color</span>: red;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>该功能在不同的旧版本浏览器中需要书写为</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-pseudo">::-webkit-input-placeholder</span> &#123;</span><br><span class="line">    <span class="attribute">color</span>: red;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-pseudo">::-moz-placeholder</span> &#123;</span><br><span class="line">    <span class="attribute">color</span>: red;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-pseudo">:-ms-input-placeholder</span> &#123;</span><br><span class="line">    <span class="attribute">color</span>: red;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-pseudo">::-ms-input-placeholder</span> &#123;</span><br><span class="line">    <span class="attribute">color</span>: red;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-pseudo">::placeholder</span> &#123;</span><br><span class="line">    <span class="attribute">color</span>: red;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>要完成这件事情，需要使用<code>autoprefixer</code>库。</p>
+<p>而<code>postcss-preset-env</code>内部包含了该库，自动有了该功能。</p>
+<p>如果需要调整<strong>兼容的浏览器</strong>范围，可以通过下面的方式进行配置</p>
+<p><strong>方式1：在postcss-preset-env的配置中加入browsers</strong></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">    plugins: &#123;</span><br><span class="line">        <span class="string">"postcss-preset-env"</span>: &#123;</span><br><span class="line">            browsers: [</span><br><span class="line">                <span class="string">"last 2 version"</span>,</span><br><span class="line">                <span class="string">"&gt; 1%"</span></span><br><span class="line">            ]</span><br><span class="line">        &#125; </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>方式2【推荐】：添加 .browserslistrc 文件</strong></p>
+<p>创建文件<code>.browserslistrc</code>，填写配置内容</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">last 2 version</span><br><span class="line">&gt; 1%</span><br></pre></td></tr></table></figure>
+
+<p><strong>方式3【推荐】：在package.json的配置中加入browserslist</strong></p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">"browserslist": [</span><br><span class="line">    "last 2 version",</span><br><span class="line">    <span class="string">"&gt; 1%"</span></span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p><code>browserslist</code>是一个多行的（数组形式的）标准字符串。</p>
+<p>它的书写规范多而繁琐，详情见：<a href="https://github.com/browserslist/browserslist" target="_blank" rel="noopener">https://github.com/browserslist/browserslist</a></p>
+<p>一般情况下，大部分网站都使用下面的格式进行书写</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">last 2 version</span><br><span class="line">&gt; 1% in CN</span><br><span class="line">not ie &lt;&#x3D; 8</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>last 2 version</code>: 浏览器的兼容最近期的两个版本</li>
+<li><code>&gt; 1% in CN</code>: 匹配中国大于1%的人使用的浏览器， <code>in CN</code>可省略</li>
+<li><code>not ie &lt;= 8</code>: 排除掉版本号小于等于8的IE浏览器</li>
+</ul>
+<blockquote>
+<p>默认情况下，匹配的结果求的是并集</p>
+</blockquote>
+<p>你可以通过网站：<a href="https://browserl.ist/" target="_blank" rel="noopener">https://browserl.ist/</a> 对配置结果覆盖的浏览器进行查询，查询时，多行之间使用英文逗号分割</p>
+<blockquote>
+<p>browserlist的数据来自于<a href="http://caniuse.com/" target="_blank" rel="noopener">CanIUse</a>网站，由于数据并非实时的，所以不会特别准确</p>
+</blockquote>
+<h3 id="未来的CSS语法"><a href="#未来的CSS语法" class="headerlink" title="未来的CSS语法"></a>未来的CSS语法</h3><p>CSS的某些前沿语法正在制定过程中，没有形成真正的标准，如果希望使用这部分语法，为了浏览器兼容性，需要进行编译</p>
+<p>过去，完成该语法编译的是<code>cssnext</code>库，不过有了<code>postcss-preset-env</code>后，它自动包含了该功能。</p>
+<p>你可以通过<code>postcss-preset-env</code>的<code>stage</code>配置，告知<code>postcss-preset-env</code>需要对哪个阶段的css语法进行兼容处理，它的默认值为2</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="string">"postcss-preset-env"</span>: &#123;</span><br><span class="line">    stage: <span class="number">0</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>一共有5个阶段可配置：</p>
+<ul>
+<li>Stage 0: Aspirational - 只是一个早期草案，极其不稳定</li>
+<li>Stage 1: Experimental - 仍然极其不稳定，但是提议已被W3C公认</li>
+<li>Stage 2: Allowable - 虽然还是不稳定，但已经可以使用了</li>
+<li>Stage 3: Embraced - 比较稳定，可能将来会发生一些小的变化，它即将成为最终的标准</li>
+<li>Stage 4: Standardized - 所有主流浏览器都应该支持的W3C标准</li>
+</ul>
+<p>了解了以上知识后，接下来了解一下未来的css语法，尽管某些语法仍处于非常早期的阶段，但是有该插件存在，编译后仍然可以被浏览器识别</p>
+<h4 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h4><p>未来的css语法是天然支持变量的</p>
+<p>在<code>:root{}</code>中定义常用变量，使用<code>--</code>前缀命名变量</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-pseudo">:root</span>&#123;</span><br><span class="line">    <span class="attribute">--lightColor</span>: <span class="number">#ddd</span>;</span><br><span class="line">    <span class="attribute">--darkColor</span>: <span class="number">#333</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">a</span>&#123;</span><br><span class="line">    <span class="attribute">color</span>: <span class="built_in">var</span>(--lightColor);</span><br><span class="line">    <span class="attribute">background</span>: <span class="built_in">var</span>(--darkColor);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>编译后，仍然可以看到原语法，因为某些新语法的存在并不会影响浏览器的渲染，尽管浏览器可能不认识<br>如果不希望在结果中看到新语法，可以配置<code>postcss-preset-env</code>的<code>preserve</code>为<code>false</code></p>
+</blockquote>
+<h4 id="自定义选择器"><a href="#自定义选择器" class="headerlink" title="自定义选择器"></a>自定义选择器</h4><figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="keyword">@custom-selector</span> :--heading h1, h2, h3, h4, h5, h6;</span><br><span class="line"><span class="keyword">@custom-selector</span> :--enter :focus,:hover;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">a</span><span class="selector-pseudo">:--enter</span>&#123;</span><br><span class="line">    <span class="attribute">color</span>: <span class="number">#f40</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-pseudo">:--heading</span>&#123;</span><br><span class="line">    <span class="attribute">font-weight</span>:bold;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-pseudo">:--heading.active</span>&#123;</span><br><span class="line">    <span class="attribute">font-weight</span>:bold;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编译后</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">a</span><span class="selector-pseudo">:focus</span>,<span class="selector-tag">a</span><span class="selector-pseudo">:hover</span>&#123;</span><br><span class="line">    <span class="attribute">color</span>: <span class="number">#f40</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">h1</span>,<span class="selector-tag">h2</span>,<span class="selector-tag">h3</span>,<span class="selector-tag">h4</span>,<span class="selector-tag">h5</span>,<span class="selector-tag">h6</span>&#123;</span><br><span class="line">    <span class="attribute">font-weight</span>:bold;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">h1</span><span class="selector-class">.active</span>,<span class="selector-tag">h2</span><span class="selector-class">.active</span>,<span class="selector-tag">h3</span><span class="selector-class">.active</span>,<span class="selector-tag">h4</span><span class="selector-class">.active</span>,<span class="selector-tag">h5</span><span class="selector-class">.active</span>,<span class="selector-tag">h6</span><span class="selector-class">.active</span>&#123;</span><br><span class="line">    <span class="attribute">font-weight</span>:bold;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="嵌套"><a href="#嵌套" class="headerlink" title="嵌套"></a>嵌套</h4><p>与LESS相同，只不过嵌套的选择器前必须使用符号<code>&amp;</code></p>
+<figure class="highlight less"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.a</span> &#123;</span><br><span class="line">    <span class="attribute">color</span>: red;</span><br><span class="line">    <span class="selector-tag">&amp;</span> <span class="selector-class">.b</span> &#123;</span><br><span class="line">        <span class="attribute">color</span>: green;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="selector-tag">&amp;</span> &gt; <span class="selector-class">.b</span> &#123;</span><br><span class="line">        <span class="attribute">color</span>: blue;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="selector-tag">&amp;</span><span class="selector-pseudo">:hover</span> &#123;</span><br><span class="line">        <span class="attribute">color</span>: <span class="number">#000</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编译后</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.a</span> &#123;</span><br><span class="line">    <span class="attribute">color</span>: red</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.a</span> <span class="selector-class">.b</span> &#123;</span><br><span class="line">    <span class="attribute">color</span>: green;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.a</span>&gt;<span class="selector-class">.b</span> &#123;</span><br><span class="line">    <span class="attribute">color</span>: blue;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.a</span><span class="selector-pseudo">:hover</span> &#123;</span><br><span class="line">    <span class="attribute">color</span>: <span class="number">#000</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="postcss-apply"><a href="#postcss-apply" class="headerlink" title="postcss-apply"></a>postcss-apply</h2><p>该插件可以支持在css中书写属性集</p>
+<p>类似于LESS中的混入，可以利用CSS的新语法定义一个CSS代码片段，然后在需要的时候应用它</p>
+<figure class="highlight less"><table><tr><td class="code"><pre><span class="line"><span class="selector-pseudo">:root</span> &#123;</span><br><span class="line">  <span class="attribute">--center</span>: &#123;</span><br><span class="line">    <span class="attribute">position</span>: absolute;</span><br><span class="line">    <span class="attribute">left</span>: <span class="number">50%</span>;</span><br><span class="line">    <span class="attribute">top</span>: <span class="number">50%</span>;</span><br><span class="line">    <span class="attribute">transform</span>: translate(-<span class="number">50%</span>, -<span class="number">50%</span>);</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.item</span>&#123;</span><br><span class="line">    <span class="variable">@apply</span> --center;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编译后</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.item</span>&#123;</span><br><span class="line">  <span class="attribute">position</span>: absolute;</span><br><span class="line">  <span class="attribute">left</span>: <span class="number">50%</span>;</span><br><span class="line">  <span class="attribute">top</span>: <span class="number">50%</span>;</span><br><span class="line">  <span class="attribute">-webkit-transform</span>: <span class="built_in">translate</span>(-<span class="number">50%</span>, -<span class="number">50%</span>);</span><br><span class="line">  <span class="attribute">transform</span>: <span class="built_in">translate</span>(-<span class="number">50%</span>, -<span class="number">50%</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>实际上，该功能也属于cssnext，不知为何<code>postcss-preset-env</code>没有支持</p>
+</blockquote>
+<h2 id="postcss-color-function"><a href="#postcss-color-function" class="headerlink" title="postcss-color-function"></a>postcss-color-function</h2><p>该插件支持在源码中使用一些颜色函数</p>
+<figure class="highlight less"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">body</span> &#123;</span><br><span class="line">    <span class="comment">/* 使用颜色#aabbcc，不做任何处理，等同于直接书写 #aabbcc */</span></span><br><span class="line">    <span class="attribute">color</span>: color(<span class="number">#aabbcc</span>);</span><br><span class="line">    <span class="comment">/* 将颜色#aabbcc透明度设置为90% */</span></span><br><span class="line">    <span class="attribute">color</span>: color(<span class="number">#aabbcc</span> a(<span class="number">90%</span>));</span><br><span class="line">    <span class="comment">/* 将颜色#aabbcc的红色部分设置为90% */</span></span><br><span class="line">    <span class="attribute">color</span>: color(<span class="number">#aabbcc</span> red(<span class="number">90%</span>));</span><br><span class="line">    <span class="comment">/* 将颜色#aabbcc调亮50%（更加趋近于白色），类似于less中的lighten函数 */</span></span><br><span class="line">    <span class="attribute">color</span>: color(<span class="number">#aabbcc</span> tint(<span class="number">50%</span>));</span><br><span class="line">    <span class="comment">/* 将颜色#aabbcc调暗50%（更加趋近于黑色），类似于less中的darken函数 */</span></span><br><span class="line">    <span class="attribute">color</span>: color(<span class="number">#aabbcc</span> shade(<span class="number">50%</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编译后</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">body</span> &#123;</span><br><span class="line">    <span class="comment">/* 使用颜色#aabbcc，不做任何处理，等同于直接书写 #aabbcc */</span></span><br><span class="line">    <span class="attribute">color</span>: <span class="built_in">rgb</span>(<span class="number">170</span>, <span class="number">187</span>, <span class="number">204</span>);</span><br><span class="line">    <span class="comment">/* 将颜色#aabbcc透明度设置为90% */</span></span><br><span class="line">    <span class="attribute">color</span>: <span class="built_in">rgba</span>(<span class="number">170</span>, <span class="number">187</span>, <span class="number">204</span>, <span class="number">0.9</span>);</span><br><span class="line">    <span class="comment">/* 将颜色#aabbcc的红色部分设置为90% */</span></span><br><span class="line">    <span class="attribute">color</span>: <span class="built_in">rgb</span>(<span class="number">230</span>, <span class="number">187</span>, <span class="number">204</span>);</span><br><span class="line">    <span class="comment">/* 将颜色#aabbcc调亮50%（更加趋近于白色），类似于less中的lighten函数 */</span></span><br><span class="line">    <span class="attribute">color</span>: <span class="built_in">rgb</span>(<span class="number">213</span>, <span class="number">221</span>, <span class="number">230</span>);</span><br><span class="line">    <span class="comment">/* 将颜色#aabbcc调暗50%（更加趋近于黑色），类似于less中的darken函数 */</span></span><br><span class="line">    <span class="attribute">color</span>: <span class="built_in">rgb</span>(<span class="number">85</span>, <span class="number">94</span>, <span class="number">102</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="扩展-postcss-import"><a href="#扩展-postcss-import" class="headerlink" title="[扩展]postcss-import"></a>[扩展]postcss-import</h2><p>该插件可以让你在<code>postcss</code>文件中导入其他样式代码，通过该插件可以将它们合并</p>
+<blockquote>
+<p>由于后续的课程中，会将postcss加入到webpack中，而webpack本身具有依赖分析的功能，所以该插件的实际意义不大</p>
+</blockquote>
+<h2 id="stylelint"><a href="#stylelint" class="headerlink" title="stylelint"></a>stylelint</h2><blockquote>
+<p>官网：<a href="https://stylelint.io/" target="_blank" rel="noopener">https://stylelint.io/</a></p>
+</blockquote>
+<p>在实际的开发中，我们可能会错误的或不规范的书写一些css代码，stylelint插件会即时的发现错误</p>
+<p>由于不同的公司可能使用不同的CSS书写规范，stylelint为了保持灵活，它本身并没有提供具体的规则验证</p>
+<p>你需要安装或自行编写规则验证方案</p>
+<p>通常，我们会安装<code>stylelint-config-standard</code>库来提供标准的CSS规则判定</p>
+<p>安装好后，我们需要告诉stylelint使用该库来进行规则验证</p>
+<p>告知的方式有多种，比较常见的是使用文件<code>.stylelintrc</code></p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="comment">//.styleintrc</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="attr">"extends"</span>: <span class="string">"stylelint-config-standard"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>此时，如果你的代码出现不规范的地方，编译时将会报出错误</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">body</span> &#123;</span><br><span class="line">    <span class="attribute">background</span>: <span class="number">#f4</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="assets/2020-02-05-14-37-11.png" alt=""></p>
+<p>发生了两处错误：</p>
+<ol>
+<li>缩进应该只有两个空格</li>
+<li>十六进制的颜色值不正确</li>
+</ol>
+<p>如果某些规则并非你所期望的，可以在配置中进行设置</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"extends"</span>: <span class="string">"stylelint-config-standard"</span>,</span><br><span class="line">    <span class="attr">"rules"</span>: &#123;</span><br><span class="line">        <span class="attr">"indentation"</span>: <span class="literal">null</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>设置为<code>null</code>可以禁用该规则，或者设置为4，表示一个缩进有4个空格。具体的设置需要参见stylelint文档：<a href="https://stylelint.io/" target="_blank" rel="noopener">https://stylelint.io/</a></p>
+<p>但是这种错误报告需要在编译时才会发生，如果我希望在编写代码时就自动在编辑器里报错呢？</p>
+<p>既然想在编辑器里达到该功能，那么就要在编辑器里做文章</p>
+<p>安装vscode的插件<code>stylelint</code>即可，它会读取你工程中的配置文件，按照配置进行实时报错</p>
+<blockquote>
+<p>实际上，如果你拥有了<code>stylelint</code>插件，可以不需要在postcss中使用该插件了</p>
+</blockquote>
+<h1 id="抽离css文件"><a href="#抽离css文件" class="headerlink" title="抽离css文件"></a>抽离css文件</h1><p>目前，css代码被css-loader转换后，交给的是style-loader进行处理。</p>
+<p>style-loader使用的方式是用一段js代码，将样式加入到style元素中。</p>
+<p>而实际的开发中，我们往往希望依赖的样式最终形成一个css文件</p>
+<p>此时，就需要用到一个库：<code>mini-css-extract-plugin</code></p>
+<p>该库提供了1个plugin和1个loader</p>
+<ul>
+<li>plugin：负责生成css文件</li>
+<li>loader：负责记录要生成的css文件的内容，同时导出开启css-module后的样式对象</li>
+</ul>
+<p>使用方式：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> MiniCssExtractPlugin = <span class="built_in">require</span>(<span class="string">"mini-css-extract-plugin"</span>)</span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">    <span class="built_in">module</span>: &#123;</span><br><span class="line">        rules: [</span><br><span class="line">            &#123;</span><br><span class="line">                test: <span class="regexp">/\.css$/</span>, <span class="attr">use</span>: [MiniCssExtractPlugin.loader, <span class="string">"css-loader?modules"</span>]</span><br><span class="line">            &#125;</span><br><span class="line">        ]</span><br><span class="line">    &#125;,</span><br><span class="line">    plugins: [</span><br><span class="line">        <span class="keyword">new</span> MiniCssExtractPlugin() <span class="comment">//负责生成css文件</span></span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>配置生成的文件名</strong></p>
+<p>同<code>output.filename</code>的含义一样，即根据chunk生成的样式文件名</p>
+<p>配置生成的文件名，例如<code>[name].[contenthash:5].css</code></p>
+<p>默认情况下，每个chunk对应一个css文件</p>
+]]></content>
+      <categories>
+        <category>webpack</category>
+      </categories>
+      <tags>
+        <tag>webpack</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>webpack loader plugin</title>
+    <url>/2020/10/27/webpack-loader-plugin/</url>
+    <content><![CDATA[<h1 id="loader"><a href="#loader" class="headerlink" title="loader"></a>loader</h1><blockquote>
+<p>webpack做的事情，仅仅是分析出各种模块的依赖关系，然后形成资源列表，最终打包生成到指定的文件中。<br>更多的功能需要借助webpack loaders和webpack plugins完成。</p>
+</blockquote>
+<p>webpack loader： loader本质上是一个函数，它的作用是将某个源码字符串转换成另一个源码字符串返回。</p>
+<p><img src="assets/2020-01-13-10-39-24.png" alt=""></p>
+<p>loader函数的将在模块解析的过程中被调用，以得到最终的源码。</p>
+<p><strong>全流程：</strong></p>
+<p><img src="assets/2020-01-13-09-28-52.png" alt=""></p>
+<p><strong>chunk中解析模块的流程：</strong></p>
+<p><img src="assets/2020-01-13-09-29-08.png" alt=""></p>
+<p><strong>chunk中解析模块的更详细流程：</strong></p>
+<p><img src="assets/2020-01-13-09-35-44.png" alt=""></p>
+<p><strong>处理loaders流程：</strong></p>
+<p><img src="assets/2020-01-13-10-29-54.png" alt=""></p>
+<p><strong>loader配置：</strong></p>
+<a id="more"></a>
+<p><strong>完整配置</strong></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">    <span class="built_in">module</span>: &#123; <span class="comment">//针对模块的配置，目前版本只有两个配置，rules、noParse</span></span><br><span class="line">        rules: [ <span class="comment">//模块匹配规则，可以存在多个规则</span></span><br><span class="line">            &#123; <span class="comment">//每个规则是一个对象</span></span><br><span class="line">                test: <span class="regexp">/\.js$/</span>, <span class="comment">//匹配的模块正则</span></span><br><span class="line">                use: [ <span class="comment">//匹配到后应用的规则模块</span></span><br><span class="line">                    &#123;  <span class="comment">//其中一个规则</span></span><br><span class="line">                        loader: <span class="string">"模块路径"</span>, <span class="comment">//loader模块的路径，该字符串会被放置到require中</span></span><br><span class="line">                        options: &#123; <span class="comment">//向对应loader传递的额外参数</span></span><br><span class="line"></span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                ]</span><br><span class="line">            &#125;</span><br><span class="line">        ]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>简化配置</strong></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">    <span class="built_in">module</span>: &#123; <span class="comment">//针对模块的配置，目前版本只有两个配置，rules、noParse</span></span><br><span class="line">        rules: [ <span class="comment">//模块匹配规则，可以存在多个规则</span></span><br><span class="line">            &#123; <span class="comment">//每个规则是一个对象</span></span><br><span class="line">                test: <span class="regexp">/\.js$/</span>, <span class="comment">//匹配的模块正则</span></span><br><span class="line">                use: [<span class="string">"模块路径1"</span>, <span class="string">"模块路径2"</span>]<span class="comment">//loader模块的路径，该字符串会被放置到require中</span></span><br><span class="line">            &#125;</span><br><span class="line">        ]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="plugin"><a href="#plugin" class="headerlink" title="plugin"></a>plugin</h1><p>loader的功能定位是转换代码，而一些其他的操作难以使用loader完成，比如：</p>
+<ul>
+<li>当webpack生成文件时，顺便多生成一个说明描述文件</li>
+<li>当webpack编译启动时，控制台输出一句话表示webpack启动了</li>
+<li>当xxxx时，xxxx</li>
+</ul>
+<p>这种类似的功能需要把功能嵌入到webpack的编译流程中，而这种事情的实现是依托于plugin的</p>
+<p><img src="assets/2020-01-15-12-45-16.png" alt=""></p>
+<p>plugin的<strong>本质</strong>是一个带有apply方法的对象</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> plugin = &#123;</span><br><span class="line">    apply: <span class="function"><span class="keyword">function</span>(<span class="params">compiler</span>)</span>&#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通常，习惯上，我们会将该对象写成构造函数的模式</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyPlugin</span></span>&#123;</span><br><span class="line">    apply(compiler)&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> plugin = <span class="keyword">new</span> MyPlugin();</span><br></pre></td></tr></table></figure>
+
+<p>要将插件应用到webpack，需要把插件对象配置到webpack的plugins数组中，如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">    plugins:[</span><br><span class="line">        <span class="keyword">new</span> MyPlugin()</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>apply函数会在初始化阶段，创建好Compiler对象后运行。</p>
+<p>compiler对象是在初始化阶段构建的，整个webpack打包期间只有一个compiler对象，后续完成打包工作的是compiler对象内部创建的compilation</p>
+<p>apply方法会在<strong>创建好compiler对象后调用</strong>，并向方法传入一个compiler对象</p>
+<p><img src="assets/2020-01-15-12-49-26.png" alt=""></p>
+<p>compiler对象提供了大量的钩子函数（hooks，可以理解为事件），plugin的开发者可以注册这些钩子函数，参与webpack编译和生成。</p>
+<p>你可以在apply方法中使用下面的代码注册钩子函数:</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyPlugin</span></span>&#123;</span><br><span class="line">    apply(compiler)&#123;</span><br><span class="line">        compiler.hooks.事件名称.事件类型(name, <span class="function"><span class="keyword">function</span>(<span class="params">compilation</span>)</span>&#123;</span><br><span class="line">            <span class="comment">//事件处理函数</span></span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>事件名称</strong></p>
+<p>即要监听的事件名，即钩子名，所有的钩子：<a href="https://www.webpackjs.com/api/compiler-hooks" target="_blank" rel="noopener">https://www.webpackjs.com/api/compiler-hooks</a></p>
+<p><strong>事件类型</strong></p>
+<p>这一部分使用的是 Tapable API，这个小型的库是一个专门用于钩子函数监听的库。</p>
+<p>它提供了一些事件类型：</p>
+<ul>
+<li>tap：注册一个同步的钩子函数，函数运行完毕则表示事件处理结束</li>
+<li>tapAsync：注册一个基于回调的异步的钩子函数，函数通过调用一个回调表示事件处理结束</li>
+<li>tapPromise：注册一个基于Promise的异步的钩子函数，函数通过返回的Promise进入已决状态表示事件处理结束</li>
+</ul>
+<p><strong>处理函数</strong></p>
+<p>处理函数有一个事件参数<code>compilation</code></p>
+]]></content>
+      <categories>
+        <category>webpack</category>
+      </categories>
+      <tags>
+        <tag>webpack</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>webpack编译</title>
+    <url>/2020/09/27/webpack%E7%BC%96%E8%AF%91/</url>
+    <content><![CDATA[<h1 id="webpack-编译过程"><a href="#webpack-编译过程" class="headerlink" title="webpack 编译过程"></a>webpack 编译过程</h1><p>webpack 的作用是将源代码编译（构建、打包）成最终代码</p>
+<p><img src="assets/2020-01-09-10-26-15.png" alt=""></p>
+<p>整个过程大致分为三个步骤</p>
+<ol>
+<li>初始化</li>
+<li>编译</li>
+<li>输出</li>
+</ol>
+<p><img src="assets/2020-01-09-10-53-28.png" alt=""></p>
+<a id="more"></a>
+<h2 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h2><p>此阶段，webpack会将<strong>CLI参数</strong>、<strong>配置文件</strong>、<strong>默认配置</strong>进行融合，形成一个最终的配置对象。</p>
+<p>对配置的处理过程是依托一个第三方库<code>yargs</code>完成的</p>
+<p>此阶段相对比较简单，主要是为接下来的编译阶段做必要的准备</p>
+<p>目前，可以简单的理解为，初始化阶段主要用于产生一个最终的配置</p>
+<h2 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h2><ol>
+<li><strong>创建chunk</strong></li>
+</ol>
+<p>chunk是webpack在内部构建过程中的一个概念，译为<code>块</code>，它表示通过某个入口找到的所有依赖的统称。</p>
+<p>根据入口模块（默认为<code>./src/index.js</code>）创建一个chunk</p>
+<p><img src="assets/2020-01-09-11-54-08.png" alt=""></p>
+<p>每个chunk都有至少两个属性：</p>
+<ul>
+<li>name：默认为main</li>
+<li>id：唯一编号，开发环境和name相同，生产环境是一个数字，从0开始</li>
+</ul>
+<ol start="2">
+<li><strong>构建所有依赖模块</strong></li>
+</ol>
+<p><img src="assets/2020-01-09-12-32-38.png" alt=""></p>
+<blockquote>
+<p>AST在线测试工具：<a href="https://astexplorer.net/" target="_blank" rel="noopener">https://astexplorer.net/</a></p>
+</blockquote>
+<p>简图</p>
+<p><img src="assets/2020-01-09-12-35-05.png" alt=""></p>
+<ol start="3">
+<li><strong>产生chunk assets</strong></li>
+</ol>
+<p>在第二步完成后，chunk中会产生一个模块列表，列表中包含了<strong>模块id</strong>和<strong>模块转换后的代码</strong></p>
+<p>接下来，webpack会根据配置为chunk生成一个资源列表，即<code>chunk assets</code>，资源列表可以理解为是生成到最终文件的文件名和文件内容</p>
+<p><img src="assets/2020-01-09-12-39-16.png" alt=""></p>
+<blockquote>
+<p>chunk hash是根据所有chunk assets的内容生成的一个hash字符串<br>hash：一种算法，具体有很多分类，特点是将一个任意长度的字符串转换为一个固定长度的字符串，而且可以保证原始内容不变，产生的hash字符串就不变</p>
+</blockquote>
+<p>简图</p>
+<p><img src="assets/2020-01-09-12-43-52.png" alt=""></p>
+<ol start="4">
+<li><strong>合并chunk assets</strong></li>
+</ol>
+<p>将多个chunk的assets合并到一起，并产生一个总的hash</p>
+<p><img src="assets/2020-01-09-12-47-43.png" alt=""></p>
+<h2 id="输出"><a href="#输出" class="headerlink" title="输出"></a>输出</h2><p>此步骤非常简单，webpack将利用node中的fs模块（文件处理模块），根据编译产生的总的assets，生成相应的文件。</p>
+<p><img src="assets/2020-01-09-12-54-34.png" alt=""></p>
+<h2 id="总过程"><a href="#总过程" class="headerlink" title="总过程"></a>总过程</h2><p><img src="assets/2020-01-09-15-51-07.png" alt=""></p>
+<p><img src="assets/2020-01-09-12-32-38.png" alt=""></p>
+<p><strong>涉及术语</strong></p>
+<ol>
+<li>module：模块，分割的代码单元，webpack中的模块可以是任何内容的文件，不仅限于JS</li>
+<li>chunk：webpack内部构建模块的块，一个chunk中包含多个模块，这些模块是从入口模块通过依赖分析得来的</li>
+<li>bundle：chunk构建好模块后会生成chunk的资源清单，清单中的每一项就是一个bundle，可以认为bundle就是最终生成的文件</li>
+<li>hash：最终的资源清单所有内容联合生成的hash值</li>
+<li>chunkhash：chunk生成的资源清单内容联合生成的hash值</li>
+<li>chunkname：chunk的名称，如果没有配置则使用main</li>
+<li>id：通常指chunk的唯一编号，如果在开发环境下构建，和chunkname相同；如果是生产环境下构建，则使用一个从0开始的数字进行编号</li>
+</ol>
+<h1 id="入口和出口"><a href="#入口和出口" class="headerlink" title="入口和出口"></a>入口和出口</h1><p><img src="assets/2020-01-09-15-51-07.png" alt=""></p>
+<blockquote>
+<p>node内置模块 - path: <a href="https://nodejs.org/dist/latest-v12.x/docs/api/path.html" target="_blank" rel="noopener">https://nodejs.org/dist/latest-v12.x/docs/api/path.html</a></p>
+</blockquote>
+<p><strong>出口</strong></p>
+<p>这里的出口是针对资源列表的文件名或路径的配置</p>
+<p>出口通过output进行配置</p>
+<p><strong>入口</strong></p>
+<p><strong>入口真正配置的是chunk</strong></p>
+<p>入口通过entry进行配置</p>
+<p>规则：</p>
+<ul>
+<li>name：chunkname</li>
+<li>hash: 总的资源hash，通常用于解决缓存问题</li>
+<li>chunkhash: 使用chunkhash</li>
+<li>id: 使用chunkid，不推荐</li>
+</ul>
+]]></content>
+      <categories>
+        <category>webpack</category>
+      </categories>
+      <tags>
+        <tag>webpack</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>webpack配置</title>
+    <url>/2020/10/27/webpack%E9%85%8D%E7%BD%AE/</url>
+    <content><![CDATA[<h1 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h1><p>webpack提供的cli支持很多的参数，例如<code>--mode</code>，但更多的时候，我们会使用更加灵活的配置文件来控制webpack的行为</p>
+<p>默认情况下，webpack会读取<code>webpack.config.js</code>文件作为配置文件，但也可以通过CLI参数<code>--config</code>来指定某个配置文件</p>
+<p>配置文件中通过CommonJS模块导出一个对象，对象中的各种属性对应不同的webpack配置</p>
+<a id="more"></a>
+<p><strong>注意：配置文件中的代码，必须是有效的node代码</strong></p>
+<p>当命令行参数与配置文件中的配置出现冲突时，以命令行参数为准。</p>
+<p><strong>基本配置：</strong></p>
+<ol>
+<li>mode：编译模式，字符串，取值为development或production，指定编译结果代码运行的环境，会影响webpack对编译结果代码格式的处理</li>
+<li>entry：入口，字符串（后续会详细讲解），指定入口文件</li>
+<li>output：出口，对象（后续会详细讲解），指定编译结果文件</li>
+</ol>
+<h1 id="devtool-配置-ignore"><a href="#devtool-配置-ignore" class="headerlink" title="devtool 配置 {ignore}"></a>devtool 配置 {ignore}</h1><h2 id="source-map-源码地图"><a href="#source-map-源码地图" class="headerlink" title="source map 源码地图"></a>source map 源码地图</h2><blockquote>
+<p>本小节的知识与 webpack 无关</p>
+</blockquote>
+<p>前端发展到现阶段，很多时候都不会直接运行源代码，可能需要对源代码进行合并、压缩、转换等操作，真正运行的是转换后的代码</p>
+<p><img src="assets/2020-01-08-16-38-26.png" alt=""></p>
+<p>这就给调试带来了困难，因为当运行发生错误的时候，我们更加希望能看到源代码中的错误，而不是转换后代码的错误</p>
+<blockquote>
+<p>jquery压缩后的代码：<a href="https://code.jquery.com/jquery-3.4.1.min.js" target="_blank" rel="noopener">https://code.jquery.com/jquery-3.4.1.min.js</a></p>
+</blockquote>
+<p>为了解决这一问题，chrome浏览器率先支持了source map，其他浏览器纷纷效仿，目前，几乎所有新版浏览器都支持了source map</p>
+<p>source map实际上是一个配置，配置中不仅记录了所有源码内容，还记录了和转换后的代码的对应关系</p>
+<p>下面是浏览器处理source map的原理</p>
+<p><img src="assets/2020-01-08-16-58-06.png" alt=""></p>
+<p><img src="assets/2020-01-08-17-01-13.png" alt=""></p>
+<p><strong>最佳实践</strong>：</p>
+<ol>
+<li>source map 应在开发环境中使用，作为一种调试手段</li>
+<li>source map 不应该在生产环境中使用，source map的文件一般较大，不仅会导致额外的网络传输，还容易暴露原始代码。即便要在生产环境中使用source map，用于调试真实的代码运行问题，也要做出一些处理规避网络传输和代码暴露的问题。</li>
+</ol>
+<h2 id="webpack中的source-map"><a href="#webpack中的source-map" class="headerlink" title="webpack中的source map"></a>webpack中的source map</h2><p>使用 webpack 编译后的代码难以调试，可以通过 devtool 配置来<strong>优化调试体验</strong></p>
+<p>具体的配置见文档：<a href="https://www.webpackjs.com/configuration/devtool/" target="_blank" rel="noopener">https://www.webpackjs.com/configuration/devtool/</a></p>
+]]></content>
+      <categories>
+        <category>webpack</category>
+      </categories>
+      <tags>
+        <tag>webpack</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>模块化兼容</title>
+    <url>/2020/07/27/%E6%A8%A1%E5%9D%97%E5%8C%96%E5%85%BC%E5%AE%B9/</url>
+    <content><![CDATA[<a id="more"></a>
+<h1 id="模块化兼容性"><a href="#模块化兼容性" class="headerlink" title="模块化兼容性"></a>模块化兼容性</h1><p>由于webpack同时支持CommonJS和ES6 module，因此需要理解它们互操作时webpack是如何处理的</p>
+<h2 id="同模块化标准"><a href="#同模块化标准" class="headerlink" title="同模块化标准"></a>同模块化标准</h2><p>如果导出和导入使用的是同一种模块化标准，打包后的效果和之前学习的模块化没有任何差异</p>
+<p><img src="assets/2020-01-07-07-50-09.png" alt=""></p>
+<p><img src="assets/2020-01-07-07-53-45.png" alt=""></p>
+<h2 id="不同模块化标准"><a href="#不同模块化标准" class="headerlink" title="不同模块化标准"></a>不同模块化标准</h2><p>不同的模块化标准，webpack按照如下的方式处理</p>
+<p><img src="assets/2020-01-07-07-54-25.png" alt=""></p>
+<p><img src="assets/2020-01-07-07-55-54.png" alt=""></p>
+<h2 id="最佳实践"><a href="#最佳实践" class="headerlink" title="最佳实践"></a>最佳实践</h2><p>代码编写最忌讳的是精神分裂，选择一个合适的模块化标准，然后贯彻整个开发阶段。</p>
+]]></content>
+      <categories>
+        <category>javaScript</category>
+      </categories>
+      <tags>
+        <tag>javaScript</tag>
+        <tag>模块化</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>模块化发展史</title>
+    <url>/2020/10/27/%E6%A8%A1%E5%9D%97%E5%8C%96%E5%8F%91%E5%B1%95%E5%8F%B2/</url>
+    <content><![CDATA[<h1 id="JavaScript-模块化发展史"><a href="#JavaScript-模块化发展史" class="headerlink" title="JavaScript 模块化发展史"></a>JavaScript 模块化发展史</h1><h2 id="第一阶段"><a href="#第一阶段" class="headerlink" title="第一阶段"></a>第一阶段</h2><p>在 JavaScript 语言刚刚诞生的时候，它仅仅用于实现页面中的一些小效果</p>
+<p>那个时候，一个页面所用到的 JS 可能只有区区几百行的代码</p>
+<p>在这种情况下，语言本身所存在的一些缺陷往往被大家有意的忽略，因为程序的规模实在太小，只要开发人员小心谨慎，往往不会造成什么问题</p>
+<p>在这个阶段，也不存在专业的前端工程师，由于前端要做的事情实在太少，因此这一部分工作往往由后端工程师顺带完成</p>
+<p>第一阶段发生的大事件：</p>
+<ul>
+<li>1996年，NetScape将JavaScript语言提交给欧洲的一个标准制定阻止ECMA（欧洲计算机制造商协会）</li>
+<li>1998年，NetScape在与微软浏览器IE的竞争中失利，宣布破产</li>
+</ul>
+<h2 id="第二阶段"><a href="#第二阶段" class="headerlink" title="第二阶段"></a>第二阶段</h2><p>ajax的出现，逐渐改变了 JavaScript 在浏览器中扮演的角色。现在，它不仅可以实现小的效果，还可以和服务器之间进行交互，以更好的体验来改变数据</p>
+<p>JS代码的数量开始逐渐增长，从最初的几百行，到后来的几万行，前端程序逐渐变得复杂</p>
+<p>后端开发者压力逐渐增加，致使一些公司开始招募专业的前端开发者</p>
+<p>但此时，前端开发者的待遇远不及后端开发者，因为前端开发者承担的开发任务相对于后端开发来说，还是比较简单的，通过短短一个月的时间集训，就可以成为满足前端开发的需要</p>
+<a id="more"></a>
+<p>究其根本原因，是因为前端开发还有几个大的问题没有解决，这些问题都严重的制约了前端程序的规模进一步扩大：</p>
+<ol>
+<li><strong>浏览器解释执行JS的速度太慢</strong></li>
+<li><strong>用户端的电脑配置不足</strong></li>
+<li>更多的代码带来了全局变量污染、依赖关系混乱等问题</li>
+</ol>
+<p>上面三个问题，就像是阿喀琉斯之踵，成为前端开发挥之不去的阴影和原罪。</p>
+<p>在这个阶段，前端开发处在一个非常尴尬的境地，它在传统的开发模式和前后端分离之间无助的徘徊</p>
+<p>第二阶段的大事件：</p>
+<ol>
+<li>IE浏览器制霸市场后，几乎不再更新</li>
+<li>ES4.0流产，导致JS语言10年间几乎毫无变化</li>
+<li>2008年ES5发布，仅解决了一些 JS API 不足的糟糕局面</li>
+</ol>
+<h2 id="第三阶段"><a href="#第三阶段" class="headerlink" title="第三阶段"></a>第三阶段</h2><p>时间继续向前推移，到了2008年，谷歌的 V8 引擎发布，将JS的执行速度推上了一个新的台阶，甚至可以和后端语言媲美。</p>
+<p>摩尔定律持续发酵，个人电脑的配置开始飞跃</p>
+<p>突然间，制约前端发展的两大问题得以解决，此时，只剩下最后一个问题还在负隅顽抗，即<strong>全局变量污染和依赖混乱</strong>的问题，解决了它，前端便可以突破一切障碍，未来无可限量。</p>
+<p>于是，全世界的前端开发者在社区中激烈的讨论，想要为这个问题寻求解决之道……</p>
+<p>2008年，有一个名叫 Ryan Dahl 小伙子正在为一件事焦头烂额，它需要在服务器端手写一个高性能的web服务，该服务对于性能要求之高，以至于目前市面上已有的web服务产品都满足不了需求。</p>
+<p>经过分析，它确定，如果要实现高性能，那么必须要尽可能的减少线程，而要减少线程，避免不了要实用异步的处理方案。</p>
+<p>一开始，他打算自己实用C/C++语言来编写，可是这一过程实在太痛苦。</p>
+<p>就在他一筹莫展的时候，谷歌 V8 引擎的发布引起了他的注意，他突然发现，JS不就是最好的实现web服务的语言吗？它天生就是单线程，并且是基于异步的！有了V8引擎的支撑，它的执行速度完全可以撑起一个服务器。而且V8是鼎鼎大名的谷歌公司发布的，谷歌一定会不断的优化V8，有这种又省钱又省力的好事，我干嘛还要自己去写呢？</p>
+<p>于是，它基于开源的V8引擎，对源代码作了一些修改，便快速的完成了该项目。</p>
+<p>2009年，Ryan推出了该web服务项目，命名为nodejs。</p>
+<p>从此，JS第一次堂堂正正的入主后端，不再是必须附属于浏览器的“玩具”语言了。</p>
+<p>也是从此刻开始，人们认识到，JS（ES）是一门真正的语言，它依附于运行环境（运行时）（宿主程序）而执行</p>
+<img src="/2020/10/27/%E6%A8%A1%E5%9D%97%E5%8C%96%E5%8F%91%E5%B1%95%E5%8F%B2/2019-11-28-15-45-47.png" class="" title="This is an example image">
+
+
+<p>nodejs的诞生，便把JS中的最后一个问题放到了台前，即<strong>全局变量污染和依赖混乱</strong>问题</p>
+<p>要直到，nodejs是服务器端，如果不解决这个问题，分模块开发就无从实现，而模块化开发是所有后端程序必不可少的内容</p>
+<p>经过社区的激烈讨论，最终，形成了一个模块化方案，即鼎鼎大名的CommonJS，该方案，彻底解决了全局变量污染和依赖混乱的问题</p>
+<p>该方案一出，立即被nodejs支持，于是，nodejs成为了第一个为JS语言实现模块化的平台，为前端接下来的迅猛发展奠定了实践基础</p>
+<p>该阶段发生的大事件：</p>
+<ul>
+<li>2008年，V8发布</li>
+<li>IE的市场逐步被 firefox 和 chrome 蚕食，现已无力回天</li>
+<li>2009年，nodejs发布，并附带commonjs模块化标准</li>
+</ul>
+<h2 id="第四阶段"><a href="#第四阶段" class="headerlink" title="第四阶段"></a>第四阶段</h2><p>CommonJS的出现打开了前端开发者的思路</p>
+<p>既然后端可以使用模块化的JS，作为JS语言的老东家浏览器为什么不行呢？</p>
+<p>于是，开始有人想办法把CommonJS运用到浏览器中</p>
+<p>可是这里面存在诸多的困难（课程中详解）</p>
+<p>办法总比困难多，有些开发者就想，既然CommonJS运用到浏览器困难，我们干嘛不自己重新定一个模块化的标准出来，难道就一定要用CommonJS标准吗？</p>
+<p>于是很快，AMD规范出炉，它解决的问题和CommonJS一样，但是可以更好的适应浏览器环境</p>
+<p>相继的，CMD规范出炉，它对AMD规范进行了改进</p>
+<p>这些行为，都受到了ECMA官方的密切关注……</p>
+<p>2015年，ES6发布，它提出了官方的模块化解决方案 —— ES6 模块化</p>
+<p>从此以后，模块化成为了JS本身特有的性质，这门语言终于有了和其他语言较量的资本，成为了可以编写大型应用的正式语言</p>
+<p>于此同时，很多开发者、技术厂商早已预见到JS的无穷潜力，于是有了下面的故事</p>
+<ul>
+<li>既然JS也能编写大型应用，那么自然也需要像其他语言那样有解决复杂问题的开发框架<ul>
+<li>Angular、React、Vue等前端开发框架出现</li>
+<li>Express、Koa等后端开发框架出现</li>
+<li>各种后端数据库驱动出现</li>
+</ul>
+</li>
+<li>要开发大型应用，自然少不了各种实用的第三方库的支持<ul>
+<li>npm包管理器出现，实用第三方库变得极其方便</li>
+<li>webpack等构建工具出现，专门用于打包和部署</li>
+</ul>
+</li>
+<li>既然JS可以放到服务器环境，为什么不能放到其他终端环境呢？<ul>
+<li>Electron发布，可以使用JS语言开发桌面应用程序</li>
+<li>RN和Vuex等技术发布，可以使用JS语言编写移动端应用程序</li>
+<li>各种小程序出现，可以使用JS编写依附于其他应用的小程序</li>
+<li>目前还有很多厂商致力于将JS应用到各种其他的终端设备，最终形成大前端生态</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>可以看到，模块化的出现，是JS通向大型应用的基石，学习好模块化，变具备了编写大型应用的基本功。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>javaScript</category>
+      </categories>
+      <tags>
+        <tag>javaScript</tag>
+        <tag>模块化</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>webpack配置细节</title>
+    <url>/2020/10/27/webpack%E9%85%8D%E7%BD%AE%E7%BB%86%E8%8A%82/</url>
+    <content><![CDATA[<h1 id="区分环境"><a href="#区分环境" class="headerlink" title="区分环境"></a>区分环境</h1><p>有些时候，我们需要针对生产环境和开发环境分别书写webpack配置</p>
+<p>为了更好的适应这种要求，webpack允许配置不仅可以是一个对象，还可以是一个<strong>函数</strong></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="params">env</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">        <span class="comment">//配置内容</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在开始构建时，webpack如果发现配置是一个函数，会调用该函数，将函数返回的对象作为配置内容，因此，开发者可以根据不同的环境返回不同的对象</p>
+<p>在调用webpack函数时，webpack会向函数传入一个参数env，该参数的值来自于webpack命令中给env指定的值，例如</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">npx webpack --env abc # env: "abc"</span><br><span class="line"></span><br><span class="line">npx webpack --env.abc # env: &#123;abc:true&#125;</span><br><span class="line">npx webpack --env.abc=1  # env： &#123;abc:1&#125;</span><br><span class="line">npx webpack --env.abc=1 --env.bcd=2 # env: &#123;abc:1, bcd:2&#125;</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<p>这样一来，我们就可以在命令中指定环境，在代码中进行判断，根据环境返回不同的配置结果。</p>
+<h1 id="其他细节配置-ignore"><a href="#其他细节配置-ignore" class="headerlink" title="其他细节配置 {ignore}"></a>其他细节配置 {ignore}</h1><p>[toc]</p>
+<h2 id="context"><a href="#context" class="headerlink" title="context"></a>context</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">context: path.resolve(__dirname, <span class="string">"app"</span>)</span><br></pre></td></tr></table></figure>
+
+<p>该配置会影响入口和loaders的解析，入口和loaders的相对路径会以context的配置作为基准路径，这样，你的配置会独立于CWD（current working directory 当前执行路径）</p>
+<h2 id="output"><a href="#output" class="headerlink" title="output"></a>output</h2><h3 id="library"><a href="#library" class="headerlink" title="library"></a>library</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">library: <span class="string">"abc"</span></span><br></pre></td></tr></table></figure>
+
+<p>这样一来，打包后的结果中，会将自执行函数的执行结果暴露给abc </p>
+<h3 id="libraryTarget"><a href="#libraryTarget" class="headerlink" title="libraryTarget"></a>libraryTarget</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">libraryTarget: <span class="string">"var"</span></span><br></pre></td></tr></table></figure>
+
+<p>该配置可以更加精细的控制如何暴露入口包的导出结果</p>
+<p>其他可用的值有：</p>
+<ul>
+<li>var：默认值，暴露给一个普通变量</li>
+<li>window：暴露给window对象的一个属性</li>
+<li>this：暴露给this的一个属性</li>
+<li>global：暴露给global的一个属性</li>
+<li>commonjs：暴露给exports的一个属性</li>
+<li>其他：<a href="https://www.webpackjs.com/configuration/output/#output-librarytarget" target="_blank" rel="noopener">https://www.webpackjs.com/configuration/output/#output-librarytarget</a></li>
+</ul>
+<h2 id="target"><a href="#target" class="headerlink" title="target"></a>target</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">target:<span class="string">"web"</span> <span class="comment">//默认值</span></span><br></pre></td></tr></table></figure>
+
+<p>设置打包结果最终要运行的环境，常用值有</p>
+<ul>
+<li>web: 打包后的代码运行在web环境中</li>
+<li>node：打包后的代码运行在node环境中</li>
+<li>其他：<a href="https://www.webpackjs.com/configuration/target/" target="_blank" rel="noopener">https://www.webpackjs.com/configuration/target/</a></li>
+</ul>
+<h2 id="module-noParse"><a href="#module-noParse" class="headerlink" title="module.noParse"></a>module.noParse</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">noParse: <span class="regexp">/jquery/</span></span><br></pre></td></tr></table></figure>
+
+<p>不解析正则表达式匹配的模块，通常用它来忽略那些大型的单模块库，以提高<strong>构建性能</strong></p>
+<h2 id="resolve"><a href="#resolve" class="headerlink" title="resolve"></a>resolve</h2><p>resolve的相关配置主要用于控制模块解析过程</p>
+<h3 id="modules"><a href="#modules" class="headerlink" title="modules"></a>modules</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">modules: [<span class="string">"node_modules"</span>]  <span class="comment">//默认值</span></span><br></pre></td></tr></table></figure>
+
+<p>当解析模块时，如果遇到导入语句，<code>require(&quot;test&quot;)</code>，webpack会从下面的位置寻找依赖的模块</p>
+<ol>
+<li>当前目录下的<code>node_modules</code>目录</li>
+<li>上级目录下的<code>node_modules</code>目录</li>
+<li>…</li>
+</ol>
+<h3 id="extensions"><a href="#extensions" class="headerlink" title="extensions"></a>extensions</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">extensions: [<span class="string">".js"</span>, <span class="string">".json"</span>]  <span class="comment">//默认值</span></span><br></pre></td></tr></table></figure>
+
+<p>当解析模块时，遇到无具体后缀的导入语句，例如<code>require(&quot;test&quot;)</code>，会依次测试它的后缀名</p>
+<ul>
+<li>test.js</li>
+<li>test.json</li>
+</ul>
+<h3 id="alias"><a href="#alias" class="headerlink" title="alias"></a>alias</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">alias: &#123;</span><br><span class="line">  <span class="string">"@"</span>: path.resolve(__dirname, <span class="string">'src'</span>),</span><br><span class="line">  <span class="string">"_"</span>: __dirname</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>有了alias（别名）后，导入语句中可以加入配置的键名，例如<code>require(&quot;@/abc.js&quot;)</code>，webpack会将其看作是<code>require(src的绝对路径+&quot;/abc.js&quot;)</code>。</p>
+<p>在大型系统中，源码结构往往比较深和复杂，别名配置可以让我们更加方便的导入依赖</p>
+<h2 id="externals"><a href="#externals" class="headerlink" title="externals"></a>externals</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">externals: &#123;</span><br><span class="line">    jquery: <span class="string">"$"</span>,</span><br><span class="line">    lodash: <span class="string">"_"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从最终的bundle中排除掉配置的配置的源码，例如，入口模块是</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">//index.js</span></span><br><span class="line"><span class="built_in">require</span>(<span class="string">"jquery"</span>)</span><br><span class="line"><span class="built_in">require</span>(<span class="string">"lodash"</span>)</span><br></pre></td></tr></table></figure>
+
+<p>生成的bundle是：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;)(&#123;</span><br><span class="line">    <span class="string">"./src/index.js"</span>: <span class="function"><span class="keyword">function</span>(<span class="params">module, exports, __webpack_require__</span>)</span>&#123;</span><br><span class="line">        __webpack_require__(<span class="string">"jquery"</span>)</span><br><span class="line">        __webpack_require__(<span class="string">"lodash"</span>)</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="string">"jquery"</span>: <span class="function"><span class="keyword">function</span>(<span class="params">module, exports</span>)</span>&#123;</span><br><span class="line">        <span class="comment">//jquery的大量源码</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="string">"lodash"</span>: <span class="function"><span class="keyword">function</span>(<span class="params">module, exports</span>)</span>&#123;</span><br><span class="line">        <span class="comment">//lodash的大量源码</span></span><br><span class="line">    &#125;,</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>但有了上面的配置后，则变成了</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;)(&#123;</span><br><span class="line">    <span class="string">"./src/index.js"</span>: <span class="function"><span class="keyword">function</span>(<span class="params">module, exports, __webpack_require__</span>)</span>&#123;</span><br><span class="line">        __webpack_require__(<span class="string">"jquery"</span>)</span><br><span class="line">        __webpack_require__(<span class="string">"lodash"</span>)</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="string">"jquery"</span>: <span class="function"><span class="keyword">function</span>(<span class="params">module, exports</span>)</span>&#123;</span><br><span class="line">        <span class="built_in">module</span>.exports = $;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="string">"lodash"</span>: <span class="function"><span class="keyword">function</span>(<span class="params">module, exports</span>)</span>&#123;</span><br><span class="line">        <span class="built_in">module</span>.exports = _;</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>这比较适用于一些第三方库来自于外部CDN的情况，这样一来，即可以在页面中使用CDN，又让bundle的体积变得更小，还不影响源码的编写</p>
+<h2 id="stats"><a href="#stats" class="headerlink" title="stats"></a>stats</h2><p>stats控制的是构建过程中控制台的输出内容</p>
+]]></content>
+      <categories>
+        <category>webpack</category>
+      </categories>
+      <tags>
+        <tag>webpack</tag>
+      </tags>
+  </entry>
+</search>

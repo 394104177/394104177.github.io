@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="webpack 编译过程webpack 的作用是将源代码编译（构建、打包）成最终代码  整个过程大致分为三个步骤  初始化 编译 输出">
+<meta property="og:type" content="article">
+<meta property="og:title" content="webpack编译">
+<meta property="og:url" content="http://yoursite.com/2020/09/27/webpack%E7%BC%96%E8%AF%91/index.html">
+<meta property="og:site_name" content="choooopa的博客">
+<meta property="og:description" content="webpack 编译过程webpack 的作用是将源代码编译（构建、打包）成最终代码  整个过程大致分为三个步骤  初始化 编译 输出">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://yoursite.com/2020/09/27/webpack%E7%BC%96%E8%AF%91/assets/2020-01-09-10-26-15.png">
+<meta property="og:image" content="http://yoursite.com/2020/09/27/webpack%E7%BC%96%E8%AF%91/assets/2020-01-09-10-53-28.png">
+<meta property="og:image" content="http://yoursite.com/2020/09/27/webpack%E7%BC%96%E8%AF%91/assets/2020-01-09-11-54-08.png">
+<meta property="og:image" content="http://yoursite.com/2020/09/27/webpack%E7%BC%96%E8%AF%91/assets/2020-01-09-12-32-38.png">
+<meta property="og:image" content="http://yoursite.com/2020/09/27/webpack%E7%BC%96%E8%AF%91/assets/2020-01-09-12-35-05.png">
+<meta property="og:image" content="http://yoursite.com/2020/09/27/webpack%E7%BC%96%E8%AF%91/assets/2020-01-09-12-39-16.png">
+<meta property="og:image" content="http://yoursite.com/2020/09/27/webpack%E7%BC%96%E8%AF%91/assets/2020-01-09-12-43-52.png">
+<meta property="og:image" content="http://yoursite.com/2020/09/27/webpack%E7%BC%96%E8%AF%91/assets/2020-01-09-12-47-43.png">
+<meta property="og:image" content="http://yoursite.com/2020/09/27/webpack%E7%BC%96%E8%AF%91/assets/2020-01-09-12-54-34.png">
+<meta property="og:image" content="http://yoursite.com/2020/09/27/webpack%E7%BC%96%E8%AF%91/assets/2020-01-09-15-51-07.png">
+<meta property="og:image" content="http://yoursite.com/2020/09/27/webpack%E7%BC%96%E8%AF%91/assets/2020-01-09-12-32-38.png">
+<meta property="og:image" content="http://yoursite.com/2020/09/27/webpack%E7%BC%96%E8%AF%91/assets/2020-01-09-15-51-07.png">
+<meta property="article:published_time" content="2020-09-26T20:41:33.000Z">
+<meta property="article:modified_time" content="2020-11-28T17:04:37.632Z">
+<meta property="article:author" content="Jimmy.H">
+<meta property="article:tag" content="webpack">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2020/09/27/webpack%E7%BC%96%E8%AF%91/assets/2020-01-09-10-26-15.png">
+
+<link rel="canonical" href="http://yoursite.com/2020/09/27/webpack%E7%BC%96%E8%AF%91/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>webpack编译 | choooopa的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">choooopa的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/09/27/webpack%E7%BC%96%E8%AF%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jimmy.H">
+      <meta itemprop="description" content="笔记">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="choooopa的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          webpack编译
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-09-27 04:41:33" itemprop="dateCreated datePublished" datetime="2020-09-27T04:41:33+08:00">2020-09-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-11-29 01:04:37" itemprop="dateModified" datetime="2020-11-29T01:04:37+08:00">2020-11-29</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/webpack/" itemprop="url" rel="index"><span itemprop="name">webpack</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="webpack-编译过程"><a href="#webpack-编译过程" class="headerlink" title="webpack 编译过程"></a>webpack 编译过程</h1><p>webpack 的作用是将源代码编译（构建、打包）成最终代码</p>
+<p><img src="assets/2020-01-09-10-26-15.png" alt=""></p>
+<p>整个过程大致分为三个步骤</p>
+<ol>
+<li>初始化</li>
+<li>编译</li>
+<li>输出</li>
+</ol>
+<p><img src="assets/2020-01-09-10-53-28.png" alt=""></p>
+<a id="more"></a>
+<h2 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h2><p>此阶段，webpack会将<strong>CLI参数</strong>、<strong>配置文件</strong>、<strong>默认配置</strong>进行融合，形成一个最终的配置对象。</p>
+<p>对配置的处理过程是依托一个第三方库<code>yargs</code>完成的</p>
+<p>此阶段相对比较简单，主要是为接下来的编译阶段做必要的准备</p>
+<p>目前，可以简单的理解为，初始化阶段主要用于产生一个最终的配置</p>
+<h2 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h2><ol>
+<li><strong>创建chunk</strong></li>
+</ol>
+<p>chunk是webpack在内部构建过程中的一个概念，译为<code>块</code>，它表示通过某个入口找到的所有依赖的统称。</p>
+<p>根据入口模块（默认为<code>./src/index.js</code>）创建一个chunk</p>
+<p><img src="assets/2020-01-09-11-54-08.png" alt=""></p>
+<p>每个chunk都有至少两个属性：</p>
+<ul>
+<li>name：默认为main</li>
+<li>id：唯一编号，开发环境和name相同，生产环境是一个数字，从0开始</li>
+</ul>
+<ol start="2">
+<li><strong>构建所有依赖模块</strong></li>
+</ol>
+<p><img src="assets/2020-01-09-12-32-38.png" alt=""></p>
+<blockquote>
+<p>AST在线测试工具：<a href="https://astexplorer.net/" target="_blank" rel="noopener">https://astexplorer.net/</a></p>
+</blockquote>
+<p>简图</p>
+<p><img src="assets/2020-01-09-12-35-05.png" alt=""></p>
+<ol start="3">
+<li><strong>产生chunk assets</strong></li>
+</ol>
+<p>在第二步完成后，chunk中会产生一个模块列表，列表中包含了<strong>模块id</strong>和<strong>模块转换后的代码</strong></p>
+<p>接下来，webpack会根据配置为chunk生成一个资源列表，即<code>chunk assets</code>，资源列表可以理解为是生成到最终文件的文件名和文件内容</p>
+<p><img src="assets/2020-01-09-12-39-16.png" alt=""></p>
+<blockquote>
+<p>chunk hash是根据所有chunk assets的内容生成的一个hash字符串<br>hash：一种算法，具体有很多分类，特点是将一个任意长度的字符串转换为一个固定长度的字符串，而且可以保证原始内容不变，产生的hash字符串就不变</p>
+</blockquote>
+<p>简图</p>
+<p><img src="assets/2020-01-09-12-43-52.png" alt=""></p>
+<ol start="4">
+<li><strong>合并chunk assets</strong></li>
+</ol>
+<p>将多个chunk的assets合并到一起，并产生一个总的hash</p>
+<p><img src="assets/2020-01-09-12-47-43.png" alt=""></p>
+<h2 id="输出"><a href="#输出" class="headerlink" title="输出"></a>输出</h2><p>此步骤非常简单，webpack将利用node中的fs模块（文件处理模块），根据编译产生的总的assets，生成相应的文件。</p>
+<p><img src="assets/2020-01-09-12-54-34.png" alt=""></p>
+<h2 id="总过程"><a href="#总过程" class="headerlink" title="总过程"></a>总过程</h2><p><img src="assets/2020-01-09-15-51-07.png" alt=""></p>
+<p><img src="assets/2020-01-09-12-32-38.png" alt=""></p>
+<p><strong>涉及术语</strong></p>
+<ol>
+<li>module：模块，分割的代码单元，webpack中的模块可以是任何内容的文件，不仅限于JS</li>
+<li>chunk：webpack内部构建模块的块，一个chunk中包含多个模块，这些模块是从入口模块通过依赖分析得来的</li>
+<li>bundle：chunk构建好模块后会生成chunk的资源清单，清单中的每一项就是一个bundle，可以认为bundle就是最终生成的文件</li>
+<li>hash：最终的资源清单所有内容联合生成的hash值</li>
+<li>chunkhash：chunk生成的资源清单内容联合生成的hash值</li>
+<li>chunkname：chunk的名称，如果没有配置则使用main</li>
+<li>id：通常指chunk的唯一编号，如果在开发环境下构建，和chunkname相同；如果是生产环境下构建，则使用一个从0开始的数字进行编号</li>
+</ol>
+<h1 id="入口和出口"><a href="#入口和出口" class="headerlink" title="入口和出口"></a>入口和出口</h1><p><img src="assets/2020-01-09-15-51-07.png" alt=""></p>
+<blockquote>
+<p>node内置模块 - path: <a href="https://nodejs.org/dist/latest-v12.x/docs/api/path.html" target="_blank" rel="noopener">https://nodejs.org/dist/latest-v12.x/docs/api/path.html</a></p>
+</blockquote>
+<p><strong>出口</strong></p>
+<p>这里的出口是针对资源列表的文件名或路径的配置</p>
+<p>出口通过output进行配置</p>
+<p><strong>入口</strong></p>
+<p><strong>入口真正配置的是chunk</strong></p>
+<p>入口通过entry进行配置</p>
+<p>规则：</p>
+<ul>
+<li>name：chunkname</li>
+<li>hash: 总的资源hash，通常用于解决缓存问题</li>
+<li>chunkhash: 使用chunkhash</li>
+<li>id: 使用chunkid，不推荐</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/webpack/" rel="tag"># webpack</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/09/27/es6%E6%A8%A1%E5%9D%97%E5%8C%96/" rel="prev" title="es6模块化">
+      <i class="fa fa-chevron-left"></i> es6模块化
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/09/27/webpack%E5%B8%B8%E7%94%A8%E6%8F%92%E4%BB%B6/" rel="next" title="webpack常用插件">
+      webpack常用插件 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#webpack-编译过程"><span class="nav-number">1.</span> <span class="nav-text">webpack 编译过程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#初始化"><span class="nav-number">1.1.</span> <span class="nav-text">初始化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编译"><span class="nav-number">1.2.</span> <span class="nav-text">编译</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#输出"><span class="nav-number">1.3.</span> <span class="nav-text">输出</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总过程"><span class="nav-number">1.4.</span> <span class="nav-text">总过程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#入口和出口"><span class="nav-number">2.</span> <span class="nav-text">入口和出口</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jimmy.H</p>
+  <div class="site-description" itemprop="description">笔记</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/394104177" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;394104177" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jimmy.H</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div><script defer src="/lib/three.js"></script>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="css工程化概述css的问题类名冲突的问题当你写一个css类的时候，你是写全局的类呢，还是写多个层级选择后的类呢？ 你会发现，怎么都不好  过深的层级不利于编写、阅读、压缩、复用 过浅的层级容易导致类名冲突  一旦样式多起来，这个问题就会变得越发严重，其实归根结底，就是类名冲突不好解决的问题">
+<meta property="og:type" content="article">
+<meta property="og:title" content="css工程化">
+<meta property="og:url" content="http://yoursite.com/2020/09/27/css%E5%B7%A5%E7%A8%8B%E5%8C%96/index.html">
+<meta property="og:site_name" content="choooopa的博客">
+<meta property="og:description" content="css工程化概述css的问题类名冲突的问题当你写一个css类的时候，你是写全局的类呢，还是写多个层级选择后的类呢？ 你会发现，怎么都不好  过深的层级不利于编写、阅读、压缩、复用 过浅的层级容易导致类名冲突  一旦样式多起来，这个问题就会变得越发严重，其实归根结底，就是类名冲突不好解决的问题">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://yoursite.com/2020/09/27/css%E5%B7%A5%E7%A8%8B%E5%8C%96/assets/2020-01-31-09-53-31.png">
+<meta property="og:image" content="http://yoursite.com/2020/09/27/css%E5%B7%A5%E7%A8%8B%E5%8C%96/assets/2020-01-31-13-54-37.png">
+<meta property="og:image" content="http://yoursite.com/2020/09/27/css%E5%B7%A5%E7%A8%8B%E5%8C%96/assets/2020-01-31-14-00-56.png">
+<meta property="og:image" content="http://yoursite.com/2020/09/27/css%E5%B7%A5%E7%A8%8B%E5%8C%96/assets/2020-01-31-14-04-11.png">
+<meta property="og:image" content="http://yoursite.com/2020/09/27/css%E5%B7%A5%E7%A8%8B%E5%8C%96/assets/2020-01-31-14-08-49.png">
+<meta property="og:image" content="http://yoursite.com/2020/09/27/css%E5%B7%A5%E7%A8%8B%E5%8C%96/assets/2020-02-03-11-48-45.png">
+<meta property="og:image" content="http://yoursite.com/2020/09/27/css%E5%B7%A5%E7%A8%8B%E5%8C%96/assets/2020-02-03-11-50-05.png">
+<meta property="og:image" content="http://yoursite.com/2020/09/27/css%E5%B7%A5%E7%A8%8B%E5%8C%96/assets/2020-02-04-14-31-33.png">
+<meta property="og:image" content="http://yoursite.com/2020/09/27/css%E5%B7%A5%E7%A8%8B%E5%8C%96/assets/2020-02-04-14-37-51.png">
+<meta property="og:image" content="http://yoursite.com/2020/09/27/css%E5%B7%A5%E7%A8%8B%E5%8C%96/assets/postcss-workflow.png">
+<meta property="og:image" content="http://yoursite.com/2020/09/27/css%E5%B7%A5%E7%A8%8B%E5%8C%96/assets/2020-02-05-14-37-11.png">
+<meta property="article:published_time" content="2020-09-26T20:58:44.000Z">
+<meta property="article:modified_time" content="2020-11-28T17:06:06.557Z">
+<meta property="article:author" content="Jimmy.H">
+<meta property="article:tag" content="webpack">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2020/09/27/css%E5%B7%A5%E7%A8%8B%E5%8C%96/assets/2020-01-31-09-53-31.png">
+
+<link rel="canonical" href="http://yoursite.com/2020/09/27/css%E5%B7%A5%E7%A8%8B%E5%8C%96/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>css工程化 | choooopa的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">choooopa的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/09/27/css%E5%B7%A5%E7%A8%8B%E5%8C%96/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jimmy.H">
+      <meta itemprop="description" content="笔记">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="choooopa的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          css工程化
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-09-27 04:58:44" itemprop="dateCreated datePublished" datetime="2020-09-27T04:58:44+08:00">2020-09-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-11-29 01:06:06" itemprop="dateModified" datetime="2020-11-29T01:06:06+08:00">2020-11-29</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/webpack/" itemprop="url" rel="index"><span itemprop="name">webpack</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="css工程化概述"><a href="#css工程化概述" class="headerlink" title="css工程化概述"></a>css工程化概述</h1><h2 id="css的问题"><a href="#css的问题" class="headerlink" title="css的问题"></a>css的问题</h2><h3 id="类名冲突的问题"><a href="#类名冲突的问题" class="headerlink" title="类名冲突的问题"></a>类名冲突的问题</h3><p>当你写一个css类的时候，你是写全局的类呢，还是写多个层级选择后的类呢？</p>
+<p>你会发现，怎么都不好</p>
+<ul>
+<li>过深的层级不利于编写、阅读、压缩、复用</li>
+<li>过浅的层级容易导致类名冲突</li>
+</ul>
+<p>一旦样式多起来，这个问题就会变得越发严重，其实归根结底，就是类名冲突不好解决的问题</p>
+<a id="more"></a>
+<h3 id="重复样式"><a href="#重复样式" class="headerlink" title="重复样式"></a>重复样式</h3><p>这种问题就更普遍了，一些重复的样式值总是不断的出现在css代码中，维护起来极其困难</p>
+<p>比如，一个网站的颜色一般就那么几种：</p>
+<ul>
+<li>primary</li>
+<li>info</li>
+<li>warn</li>
+<li>error</li>
+<li>success</li>
+</ul>
+<p>如果有更多的颜色，都是从这些色调中自然变化得来，可以想象，这些颜色会到处充斥到诸如背景、文字、边框中，一旦要做颜色调整，是一个非常大的工程</p>
+<h3 id="css文件细分问题"><a href="#css文件细分问题" class="headerlink" title="css文件细分问题"></a>css文件细分问题</h3><p>在大型项目中，css也需要更细的拆分，这样有利于css代码的维护。</p>
+<p>比如，有一个做轮播图的模块，它不仅需要依赖js功能，还需要依赖css样式，既然依赖的js功能仅关心轮播图，那css样式也应该仅关心轮播图，由此类推，不同的功能依赖不同的css样式、公共样式可以单独抽离，这样就形成了不同于过去的css文件结构：文件更多、拆分的更细</p>
+<p>而同时，在真实的运行环境下，我们却希望文件越少越好，这种情况和JS遇到的情况是一致的</p>
+<p>因此，对于css，也需要工程化管理</p>
+<p>从另一个角度来说，css的工程化会遇到更多的挑战，因为css不像JS，它的语法本身经过这么多年并没有发生多少的变化（css3也仅仅是多了一些属性而已），对于css语法本身的改变也是一个工程化的课题</p>
+<h2 id="如何解决"><a href="#如何解决" class="headerlink" title="如何解决"></a>如何解决</h2><p>这么多年来，官方一直没有提出方案来解决上述问题</p>
+<p>一些第三方机构针对不同的问题，提出了自己的解决方案</p>
+<h3 id="解决类名冲突"><a href="#解决类名冲突" class="headerlink" title="解决类名冲突"></a>解决类名冲突</h3><p>一些第三方机构提出了一些方案来解决该问题，常见的解决方案如下：</p>
+<p><strong>命名约定</strong></p>
+<p>即提供一种命名的标准，来解决冲突，常见的标准有：</p>
+<ul>
+<li>BEM</li>
+<li>OOCSS</li>
+<li>AMCSS</li>
+<li>SMACSS</li>
+<li>其他</li>
+</ul>
+<p><strong>css in js</strong></p>
+<p>这种方案非常大胆，它觉得，css语言本身几乎无可救药了，干脆直接用js对象来表示样式，然后把样式直接应用到元素的style中</p>
+<p>这样一来，css变成了一个一个的对象，就可以完全利用到js语言的优势，你可以：</p>
+<ul>
+<li>通过一个函数返回一个样式对象</li>
+<li>把公共的样式提取到公共模块中返回</li>
+<li>应用js的各种特性操作对象，比如：混合、提取、拆分</li>
+<li>更多的花样</li>
+</ul>
+<blockquote>
+<p>这种方案在手机端的React Native中大行其道</p>
+</blockquote>
+<p><strong>css module</strong></p>
+<p>非常有趣和好用的css模块化方案，编写简单，绝对不重名</p>
+<p>具体的课程中详细介绍</p>
+<h3 id="解决重复样式的问题"><a href="#解决重复样式的问题" class="headerlink" title="解决重复样式的问题"></a>解决重复样式的问题</h3><p><strong>css in js</strong></p>
+<p>这种方案虽然可以利用js语言解决重复样式值的问题，但由于太过激进，很多习惯写css的开发者编写起来并不是很适应</p>
+<p><strong>预编译器</strong></p>
+<p>有些第三方搞出一套css语言的进化版来解决这个问题，它支持变量、函数等高级语法，然后经过编译器将其编译成为正常的css</p>
+<p>这种方案特别像构建工具，不过它仅针对css</p>
+<p>常见的预编译器支持的语言有：</p>
+<ul>
+<li>less</li>
+<li>sass</li>
+</ul>
+<h3 id="解决css文件细分问题"><a href="#解决css文件细分问题" class="headerlink" title="解决css文件细分问题"></a>解决css文件细分问题</h3><p>这一部分，就要依靠构建工具，例如webpack来解决了</p>
+<p>利用一些loader或plugin来打包、合并、压缩css文件</p>
+<h1 id="利用webpack拆分css-ignore"><a href="#利用webpack拆分css-ignore" class="headerlink" title="利用webpack拆分css {ignore}"></a>利用webpack拆分css {ignore}</h1><p>要拆分css，就必须把css当成像js那样的模块；要把css当成模块，就必须有一个构建工具（webpack），它具备合并代码的能力</p>
+<p>而webpack本身只能读取css文件的内容、将其当作JS代码进行分析，因此，会导致错误</p>
+<p>于是，就必须有一个loader，能够将css代码转换为js代码</p>
+<h2 id="css-loader"><a href="#css-loader" class="headerlink" title="css-loader"></a>css-loader</h2><p>css-loader的作用，就是将css代码转换为js代码</p>
+<p>它的处理原理极其简单：将css代码作为字符串导出</p>
+<p>例如：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.red</span>&#123;</span><br><span class="line">    <span class="attribute">color</span>:<span class="string">"#f40"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>经过css-loader转换后变成js代码：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = <span class="string">`.red&#123;</span></span><br><span class="line"><span class="string">    color:"#f40";</span></span><br><span class="line"><span class="string">&#125;`</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>上面的js代码是经过我简化后的，不代表真实的css-loader的转换后代码，css-loader转换后的代码会有些复杂，同时会导出更多的信息，但核心思想不变</p>
+</blockquote>
+<p>再例如：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.red</span>&#123;</span><br><span class="line">    <span class="attribute">color</span>:<span class="string">"#f40"</span>;</span><br><span class="line">    <span class="attribute">background</span>:<span class="built_in">url</span>(<span class="string">"./bg.png"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>经过css-loader转换后变成js代码：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> import1 = <span class="built_in">require</span>(<span class="string">"./bg.png"</span>);</span><br><span class="line"><span class="built_in">module</span>.exports = <span class="string">`.red&#123;</span></span><br><span class="line"><span class="string">    color:"#f40";</span></span><br><span class="line"><span class="string">    background:url("<span class="subst">$&#123;import1&#125;</span>")</span></span><br><span class="line"><span class="string">&#125;`</span>;</span><br></pre></td></tr></table></figure>
+
+<p>这样一来，经过webpack的后续处理，会把依赖<code>./bg.png</code>添加到模块列表，然后再将代码转换为</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> import1 = __webpack_require__(<span class="string">"./src/bg.png"</span>);</span><br><span class="line"><span class="built_in">module</span>.exports = <span class="string">`.red&#123;</span></span><br><span class="line"><span class="string">    color:"#f40";</span></span><br><span class="line"><span class="string">    background:url("<span class="subst">$&#123;import1&#125;</span>")</span></span><br><span class="line"><span class="string">&#125;`</span>;</span><br></pre></td></tr></table></figure>
+
+<p>再例如：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">@import</span> <span class="string">"./reset.css"</span>;</span><br><span class="line"><span class="selector-class">.red</span>&#123;</span><br><span class="line">    <span class="attribute">color</span>:<span class="string">"#f40"</span>;</span><br><span class="line">    <span class="attribute">background</span>:<span class="built_in">url</span>(<span class="string">"./bg.png"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>会转换为：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> import1 = <span class="built_in">require</span>(<span class="string">"./reset.css"</span>);</span><br><span class="line"><span class="keyword">var</span> import2 = <span class="built_in">require</span>(<span class="string">"./bg.png"</span>);</span><br><span class="line"><span class="built_in">module</span>.exports = <span class="string">`<span class="subst">$&#123;import1&#125;</span></span></span><br><span class="line"><span class="string">.red&#123;</span></span><br><span class="line"><span class="string">    color:"#f40";</span></span><br><span class="line"><span class="string">    background:url("<span class="subst">$&#123;import2&#125;</span>")</span></span><br><span class="line"><span class="string">&#125;`</span>;</span><br></pre></td></tr></table></figure>
+
+<p>总结，css-loader干了什么：</p>
+<ol>
+<li>将css文件的内容作为字符串导出</li>
+<li>将css中的其他依赖作为require导入，以便webpack分析依赖</li>
+</ol>
+<h2 id="style-loader"><a href="#style-loader" class="headerlink" title="style-loader"></a>style-loader</h2><p>由于css-loader仅提供了将css转换为字符串导出的能力，剩余的事情要交给其他loader或plugin来处理</p>
+<p>style-loader可以将css-loader转换后的代码进一步处理，将css-loader导出的字符串加入到页面的style元素中</p>
+<p>例如：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.red</span>&#123;</span><br><span class="line">    <span class="attribute">color</span>:<span class="string">"#f40"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>经过css-loader转换后变成js代码：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = <span class="string">`.red&#123;</span></span><br><span class="line"><span class="string">    color:"#f40";</span></span><br><span class="line"><span class="string">&#125;`</span></span><br></pre></td></tr></table></figure>
+
+<p>经过style-loader转换后变成：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = <span class="string">`.red&#123;</span></span><br><span class="line"><span class="string">    color:"#f40";</span></span><br><span class="line"><span class="string">&#125;`</span></span><br><span class="line"><span class="keyword">var</span> style = <span class="built_in">module</span>.exports;</span><br><span class="line"><span class="keyword">var</span> styleElem = <span class="built_in">document</span>.createElement(<span class="string">"style"</span>);</span><br><span class="line">styleElem.innerHTML = style;</span><br><span class="line"><span class="built_in">document</span>.head.appendChild(styleElem);</span><br><span class="line"><span class="built_in">module</span>.exports = &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>以上代码均为简化后的代码，并不代表真实的代码<br>style-loader有能力避免同一个样式的重复导入</p>
+</blockquote>
+<h1 id="BEM"><a href="#BEM" class="headerlink" title="BEM"></a>BEM</h1><p>BEM是一套针对css类样式的命名方法。</p>
+<blockquote>
+<p>其他命名方法还有：OOCSS、AMCSS、SMACSS等等</p>
+</blockquote>
+<p>BEM全称是：<strong>B</strong>lock <strong>E</strong>lement <strong>M</strong>odifier</p>
+<p>一个完整的BEM类名：block__element_modifier，例如：<code>banner__dot_selected</code>，可以表示：轮播图中，处于选中状态的小圆点</p>
+<p><img src="assets/2020-01-31-09-53-31.png" alt=""></p>
+<p>三个部分的具体含义为：</p>
+<ul>
+<li><strong>Block</strong>：页面中的大区域，表示最顶级的划分，例如：轮播图(<code>banner</code>)、布局(<code>layout</code>)、文章(<code>article</code>)等等</li>
+<li><strong>element</strong>：区域中的组成部分，例如：轮播图中的横幅图片(<code>banner__img</code>)、轮播图中的容器（<code>banner__container</code>）、布局中的头部(<code>layout__header</code>)、文章中的标题(<code>article_title</code>)</li>
+<li><strong>modifier</strong>：可选。通常表示状态，例如：处于展开状态的布局左边栏（<code>layout__left_expand</code>）、处于选中状态的轮播图小圆点(<code>banner__dot_selected</code>)</li>
+</ul>
+<p>在某些大型工程中，如果使用BEM命名法，还可能会增加一个前缀，来表示类名的用途，常见的前缀有：</p>
+<ul>
+<li><strong>l</strong>: layout，表示这个样式是用于布局的</li>
+<li><strong>c</strong>: component，表示这个样式是一个组件，即一个功能区域</li>
+<li><strong>u</strong>: util，表示这个样式是一个通用的、工具性质的样式</li>
+<li><strong>j</strong>: javascript，表示这个样式没有实际意义，是专门提供给js获取元素使用的</li>
+</ul>
+<h1 id="css-in-js"><a href="#css-in-js" class="headerlink" title="css in js"></a>css in js</h1><p>css in js 的核心思想是：用一个JS对象来描述样式，而不是css样式表</p>
+<p>例如下面的对象就是一个用于描述样式的对象：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> styles = &#123;</span><br><span class="line">    backgroundColor: <span class="string">"#f40"</span>,</span><br><span class="line">    color: <span class="string">"#fff"</span>,</span><br><span class="line">    width: <span class="string">"400px"</span>,</span><br><span class="line">    height: <span class="string">"500px"</span>,</span><br><span class="line">    margin: <span class="string">"0 auto"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>由于这种描述样式的方式<strong>根本就不存在类名</strong>，自然不会有类名冲突</p>
+<p>至于如何把样式应用到界面上，不是它所关心的事情，你可以用任何技术、任何框架、任何方式将它应用到界面。</p>
+<blockquote>
+<p>后续学习的vue、react都支持css in js，可以非常轻松的应用到界面</p>
+</blockquote>
+<p>css in js的特点：</p>
+<ul>
+<li><strong>绝无冲突的可能</strong>：由于它根本不存在类名，所以绝不可能出现类名冲突</li>
+<li><strong>更加灵活</strong>：可以充分利用JS语言灵活的特点，用各种招式来处理样式</li>
+<li><strong>应用面更广</strong>：只要支持js语言，就可以支持css in js，因此，在一些用JS语言开发移动端应用的时候非常好用，因为移动端应用很有可能并不支持css</li>
+<li><strong>书写不便</strong>：书写样式，特别是公共样式的时候，处理起来不是很方便</li>
+<li><strong>在页面中增加了大量冗余内容</strong>：在页面中处理css in js时，往往是将样式加入到元素的style属性中，会大量增加元素的内联样式，并且可能会有大量重复，不易阅读最终的页面代码</li>
+</ul>
+<h1 id="css-module-ignore"><a href="#css-module-ignore" class="headerlink" title="css module {ignore}"></a>css module {ignore}</h1><blockquote>
+<p>通过命名规范来限制类名太过死板，而css in js虽然足够灵活，但是书写不便。<br>css module 开辟一种全新的思路来解决类名冲突的问题</p>
+</blockquote>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>css module 遵循以下思路解决类名冲突问题：</p>
+<ol>
+<li>css的类名冲突往往发生在大型项目中</li>
+<li>大型项目往往会使用构建工具（webpack等）搭建工程</li>
+<li>构建工具允许将css样式切分为更加精细的模块</li>
+<li>同JS的变量一样，每个css模块文件中难以出现冲突的类名，冲突的类名往往发生在不同的css模块文件中</li>
+<li>只需要保证构建工具在合并样式代码后不会出现类名冲突即可</li>
+</ol>
+<p><img src="assets/2020-01-31-13-54-37.png" alt=""></p>
+<h2 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h2><p>在webpack中，作为处理css的css-loader，它实现了css module的思想，要启用css module，需要将css-loader的配置<code>modules</code>设置为<code>true</code>。</p>
+<p>css-loader的实现方式如下：</p>
+<p><img src="assets/2020-01-31-14-00-56.png" alt=""></p>
+<p>原理极其简单，开启了css module后，css-loader会将样式中的类名进行转换，转换为一个唯一的hash值。</p>
+<p>由于hash值是根据模块路径和类名生成的，因此，不同的css模块，哪怕具有相同的类名，转换后的hash值也不一样。</p>
+<p><img src="assets/2020-01-31-14-04-11.png" alt=""></p>
+<h2 id="如何应用样式"><a href="#如何应用样式" class="headerlink" title="如何应用样式"></a>如何应用样式</h2><p>css module带来了一个新的问题：源代码的类名和最终生成的类名是不一样的，而开发者只知道自己写的源代码中的类名，并不知道最终的类名是什么，那如何应用类名到元素上呢？</p>
+<p>为了解决这个问题，css-loader会导出原类名和最终类名的对应关系，该关系是通过一个对象描述的</p>
+<p><img src="assets/2020-01-31-14-08-49.png" alt=""></p>
+<p>这样一来，我们就可以在js代码中获取到css模块导出的结果，从而应用类名了</p>
+<p>style-loader为了我们更加方便的应用类名，会去除掉其他信息，仅暴露对应关系</p>
+<h2 id="其他操作"><a href="#其他操作" class="headerlink" title="其他操作"></a>其他操作</h2><h3 id="全局类名"><a href="#全局类名" class="headerlink" title="全局类名"></a>全局类名</h3><p>某些类名是全局的、静态的，不需要进行转换，仅需要在类名位置使用一个特殊的语法即可：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-pseudo">:global(.main)</span>&#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用了global的类名不会进行转换，相反的，没有使用global的类名，表示默认使用了local</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-pseudo">:local(.main)</span>&#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用了local的类名表示局部类名，是可能会造成冲突的类名，会被css module进行转换</p>
+<h3 id="如何控制最终的类名"><a href="#如何控制最终的类名" class="headerlink" title="如何控制最终的类名"></a>如何控制最终的类名</h3><p>绝大部分情况下，我们都不需要控制最终的类名，因为控制它没有任何意义</p>
+<p>如果一定要控制最终的类名，需要配置css-loader的<code>localIdentName</code></p>
+<h2 id="其他注意事项"><a href="#其他注意事项" class="headerlink" title="其他注意事项"></a>其他注意事项</h2><ul>
+<li>css module往往配合构建工具使用</li>
+<li>css module仅处理顶级类名，尽量不要书写嵌套的类名，也没有这个必要</li>
+<li>css module仅处理类名，不处理其他选择器</li>
+<li>css module还会处理id选择器，不过任何时候都没有使用id选择器的理由</li>
+<li>使用了css module后，只要能做到让类名望文知意即可，不需要遵守其他任何的命名规范</li>
+</ul>
+<h1 id="CSS预编译器-ignore"><a href="#CSS预编译器-ignore" class="headerlink" title="CSS预编译器 {ignore}"></a>CSS预编译器 {ignore}</h1><h2 id="基本原理"><a href="#基本原理" class="headerlink" title="基本原理"></a>基本原理</h2><p>编写css时，受限于css语言本身，常常难以处理一些问题：</p>
+<ul>
+<li>重复的样式值：例如常用颜色、常用尺寸</li>
+<li>重复的代码段：例如绝对定位居中、清除浮动</li>
+<li>重复的嵌套书写</li>
+</ul>
+<p>由于官方迟迟不对css语言本身做出改进，一些第三方机构开始想办法来解决这些问题</p>
+<p>其中一种方案，便是预编译器</p>
+<p>预编译器的原理很简单，即使用一种更加优雅的方式来书写样式代码，通过一个编译器，将其转换为可被浏览器识别的传统css代码</p>
+<p><img src="assets/2020-02-03-11-48-45.png" alt=""></p>
+<p>目前，最流行的预编译器有<strong>LESS</strong>和<strong>SASS</strong>，由于它们两者特别相似，因此仅学习一种即可（本课程学习LESS）</p>
+<p><img src="assets/2020-02-03-11-50-05.png" alt=""></p>
+<blockquote>
+<p>less官网：<a href="http://lesscss.org/" target="_blank" rel="noopener">http://lesscss.org/</a><br>less中文文档1（非官方）：<a href="http://lesscss.cn/" target="_blank" rel="noopener">http://lesscss.cn/</a><br>less中文文档2（非官方）：<a href="https://less.bootcss.com/" target="_blank" rel="noopener">https://less.bootcss.com/</a><br>sass官网：<a href="https://sass-lang.com/" target="_blank" rel="noopener">https://sass-lang.com/</a><br>sass中文文档1（非官方）：<a href="https://www.sass.hk/" target="_blank" rel="noopener">https://www.sass.hk/</a><br>sass中文文档2（非官方）：<a href="https://sass.bootcss.com/" target="_blank" rel="noopener">https://sass.bootcss.com/</a></p>
+</blockquote>
+<h2 id="LESS的安装和使用"><a href="#LESS的安装和使用" class="headerlink" title="LESS的安装和使用"></a>LESS的安装和使用</h2><p>从原理可知，要使用LESS，必须要安装LESS编译器</p>
+<p>LESS编译器是基于node开发的，可以通过npm下载安装</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i -D less</span><br></pre></td></tr></table></figure>
+
+<p>安装好了less之后，它提供了一个CLI工具<code>lessc</code>，通过该工具即可完成编译</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lessc less代码文件 编译后的文件</span><br></pre></td></tr></table></figure>
+
+<p>试一试:</p>
+<p>新建一个<code>index.less</code>文件，编写内容如下：</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// less代码</span></span><br><span class="line"><span class="variable">@red:</span> <span class="number">#f40</span>;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.redcolor</span> &#123;</span><br><span class="line">    <span class="attribute">color</span>: <span class="variable">@red</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lessc index.less index.css</span><br></pre></td></tr></table></figure>
+
+<p>可以看到编译之后的代码：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.redcolor</span> &#123;</span><br><span class="line">  <span class="attribute">color</span>: <span class="number">#f40</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="LESS的基本使用"><a href="#LESS的基本使用" class="headerlink" title="LESS的基本使用"></a>LESS的基本使用</h2><p>具体的使用见文档：<a href="https://less.bootcss.com/" target="_blank" rel="noopener">https://less.bootcss.com/</a></p>
+<ul>
+<li>变量</li>
+<li>混合</li>
+<li>嵌套</li>
+<li>运算</li>
+<li>函数</li>
+<li>作用域</li>
+<li>注释</li>
+<li>导入</li>
+</ul>
+<h1 id="PostCss-ignore"><a href="#PostCss-ignore" class="headerlink" title="PostCss {ignore}"></a>PostCss {ignore}</h1><blockquote>
+<p>本节课的内容和webpack无关！！！</p>
+</blockquote>
+<h1 id="什么是PostCss"><a href="#什么是PostCss" class="headerlink" title="什么是PostCss"></a>什么是PostCss</h1><p>学习到现在，可以看出，CSS工程化面临着诸多问题，而解决这些问题的方案多种多样。</p>
+<p>如果把CSS单独拎出来看，光是样式本身，就有很多事情要处理。</p>
+<p>既然有这么多事情要处理，何不把这些事情集中到一起统一处理呢？</p>
+<p>PostCss就是基于这样的理念出现的。</p>
+<p>PostCss类似于一个编译器，可以将样式源码编译成最终的CSS代码</p>
+<p><img src="assets/2020-02-04-14-31-33.png" alt=""></p>
+<p>看上去是不是和LESS、SASS一样呢？</p>
+<p>但PostCss和LESS、SASS的思路不同，它其实只做一些代码分析之类的事情，将分析的结果交给插件，具体的代码转换操作是插件去完成的。</p>
+<p><img src="assets/2020-02-04-14-37-51.png" alt=""></p>
+<p>官方的一张图更能说明postcss的处理流程：</p>
+<p><img src="assets/postcss-workflow.png" alt=""></p>
+<blockquote>
+<p>这一点有点像webpack，webpack本身仅做依赖分析、抽象语法树分析，其他的操作是靠插件和加载器完成的。</p>
+</blockquote>
+<p>官网地址：<a href="https://postcss.org/" target="_blank" rel="noopener">https://postcss.org/</a><br>github地址：<a href="https://github.com/postcss/postcss" target="_blank" rel="noopener">https://github.com/postcss/postcss</a></p>
+<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><p>PostCss是基于node编写的，因此可以使用npm安装</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i -D postcss</span><br></pre></td></tr></table></figure>
+
+<p>postcss库提供了对应的js api用于转换代码，如果你想使用postcss的一些高级功能，或者想开发postcss插件，就要api使用postcss，api的文档地址是：<a href="http://api.postcss.org/" target="_blank" rel="noopener">http://api.postcss.org/</a></p>
+<p>不过绝大部分时候，我们都是使用者，并不希望使用代码的方式来使用PostCss</p>
+<p>因此，我们可以再安装一个postcss-cli，通过命令行来完成编译</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i -D postcss-cli</span><br></pre></td></tr></table></figure>
+
+<p>postcss-cli提供一个命令，它调用postcss中的api来完成编译</p>
+<p>命令的使用方式为：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">postcss 源码文件 -o 输出文件</span><br></pre></td></tr></table></figure>
+
+<h1 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h1><p>和webpack类似，postcss有自己的配置文件，该配置文件会影响postcss的某些编译行为。</p>
+<p>配置文件的默认名称是：<code>postcss.config.js</code></p>
+<p>例如：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">    map: <span class="literal">false</span>, <span class="comment">//关闭source-map</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="插件"><a href="#插件" class="headerlink" title="插件"></a>插件</h1><p>光使用postcss是没有多少意义的，要让它真正的发挥作用，需要插件</p>
+<p>postcss的插件市场：<a href="https://www.postcss.parts/" target="_blank" rel="noopener">https://www.postcss.parts/</a></p>
+<p>下面罗列一些postcss的常用插件</p>
+<h2 id="postcss-preset-env"><a href="#postcss-preset-env" class="headerlink" title="postcss-preset-env"></a>postcss-preset-env</h2><p>过去使用postcss的时候，往往会使用大量的插件，它们各自解决一些问题</p>
+<p>这样导致的结果是安装插件、配置插件都特别的繁琐</p>
+<p>于是出现了这么一个插件<code>postcss-preset-env</code>，它称之为<code>postcss预设环境</code>，大意就是它整合了很多的常用插件到一起，并帮你完成了基本的配置，你只需要安装它一个插件，就相当于安装了很多插件了。</p>
+<p>安装好该插件后，在postcss配置中加入下面的配置</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">    plugins: &#123;</span><br><span class="line">        <span class="string">"postcss-preset-env"</span>: &#123;&#125; <span class="comment">// &#123;&#125; 中可以填写插件的配置</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>该插件的功能很多，下面一一介绍</p>
+<h3 id="自动的厂商前缀"><a href="#自动的厂商前缀" class="headerlink" title="自动的厂商前缀"></a>自动的厂商前缀</h3><p>某些新的css样式需要在旧版本浏览器中使用厂商前缀方可实现</p>
+<p>例如</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-pseudo">::placeholder</span> &#123;</span><br><span class="line">    <span class="attribute">color</span>: red;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>该功能在不同的旧版本浏览器中需要书写为</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-pseudo">::-webkit-input-placeholder</span> &#123;</span><br><span class="line">    <span class="attribute">color</span>: red;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-pseudo">::-moz-placeholder</span> &#123;</span><br><span class="line">    <span class="attribute">color</span>: red;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-pseudo">:-ms-input-placeholder</span> &#123;</span><br><span class="line">    <span class="attribute">color</span>: red;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-pseudo">::-ms-input-placeholder</span> &#123;</span><br><span class="line">    <span class="attribute">color</span>: red;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-pseudo">::placeholder</span> &#123;</span><br><span class="line">    <span class="attribute">color</span>: red;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>要完成这件事情，需要使用<code>autoprefixer</code>库。</p>
+<p>而<code>postcss-preset-env</code>内部包含了该库，自动有了该功能。</p>
+<p>如果需要调整<strong>兼容的浏览器</strong>范围，可以通过下面的方式进行配置</p>
+<p><strong>方式1：在postcss-preset-env的配置中加入browsers</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">    plugins: &#123;</span><br><span class="line">        <span class="string">"postcss-preset-env"</span>: &#123;</span><br><span class="line">            browsers: [</span><br><span class="line">                <span class="string">"last 2 version"</span>,</span><br><span class="line">                <span class="string">"&gt; 1%"</span></span><br><span class="line">            ]</span><br><span class="line">        &#125; </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>方式2【推荐】：添加 .browserslistrc 文件</strong></p>
+<p>创建文件<code>.browserslistrc</code>，填写配置内容</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">last 2 version</span><br><span class="line">&gt; 1%</span><br></pre></td></tr></table></figure>
+
+<p><strong>方式3【推荐】：在package.json的配置中加入browserslist</strong></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">"browserslist": [</span><br><span class="line">    "last 2 version",</span><br><span class="line">    <span class="string">"&gt; 1%"</span></span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p><code>browserslist</code>是一个多行的（数组形式的）标准字符串。</p>
+<p>它的书写规范多而繁琐，详情见：<a href="https://github.com/browserslist/browserslist" target="_blank" rel="noopener">https://github.com/browserslist/browserslist</a></p>
+<p>一般情况下，大部分网站都使用下面的格式进行书写</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">last 2 version</span><br><span class="line">&gt; 1% in CN</span><br><span class="line">not ie &lt;&#x3D; 8</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>last 2 version</code>: 浏览器的兼容最近期的两个版本</li>
+<li><code>&gt; 1% in CN</code>: 匹配中国大于1%的人使用的浏览器， <code>in CN</code>可省略</li>
+<li><code>not ie &lt;= 8</code>: 排除掉版本号小于等于8的IE浏览器</li>
+</ul>
+<blockquote>
+<p>默认情况下，匹配的结果求的是并集</p>
+</blockquote>
+<p>你可以通过网站：<a href="https://browserl.ist/" target="_blank" rel="noopener">https://browserl.ist/</a> 对配置结果覆盖的浏览器进行查询，查询时，多行之间使用英文逗号分割</p>
+<blockquote>
+<p>browserlist的数据来自于<a href="http://caniuse.com/" target="_blank" rel="noopener">CanIUse</a>网站，由于数据并非实时的，所以不会特别准确</p>
+</blockquote>
+<h3 id="未来的CSS语法"><a href="#未来的CSS语法" class="headerlink" title="未来的CSS语法"></a>未来的CSS语法</h3><p>CSS的某些前沿语法正在制定过程中，没有形成真正的标准，如果希望使用这部分语法，为了浏览器兼容性，需要进行编译</p>
+<p>过去，完成该语法编译的是<code>cssnext</code>库，不过有了<code>postcss-preset-env</code>后，它自动包含了该功能。</p>
+<p>你可以通过<code>postcss-preset-env</code>的<code>stage</code>配置，告知<code>postcss-preset-env</code>需要对哪个阶段的css语法进行兼容处理，它的默认值为2</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"postcss-preset-env"</span>: &#123;</span><br><span class="line">    stage: <span class="number">0</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>一共有5个阶段可配置：</p>
+<ul>
+<li>Stage 0: Aspirational - 只是一个早期草案，极其不稳定</li>
+<li>Stage 1: Experimental - 仍然极其不稳定，但是提议已被W3C公认</li>
+<li>Stage 2: Allowable - 虽然还是不稳定，但已经可以使用了</li>
+<li>Stage 3: Embraced - 比较稳定，可能将来会发生一些小的变化，它即将成为最终的标准</li>
+<li>Stage 4: Standardized - 所有主流浏览器都应该支持的W3C标准</li>
+</ul>
+<p>了解了以上知识后，接下来了解一下未来的css语法，尽管某些语法仍处于非常早期的阶段，但是有该插件存在，编译后仍然可以被浏览器识别</p>
+<h4 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h4><p>未来的css语法是天然支持变量的</p>
+<p>在<code>:root{}</code>中定义常用变量，使用<code>--</code>前缀命名变量</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-pseudo">:root</span>&#123;</span><br><span class="line">    <span class="attribute">--lightColor</span>: <span class="number">#ddd</span>;</span><br><span class="line">    <span class="attribute">--darkColor</span>: <span class="number">#333</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">a</span>&#123;</span><br><span class="line">    <span class="attribute">color</span>: <span class="built_in">var</span>(--lightColor);</span><br><span class="line">    <span class="attribute">background</span>: <span class="built_in">var</span>(--darkColor);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>编译后，仍然可以看到原语法，因为某些新语法的存在并不会影响浏览器的渲染，尽管浏览器可能不认识<br>如果不希望在结果中看到新语法，可以配置<code>postcss-preset-env</code>的<code>preserve</code>为<code>false</code></p>
+</blockquote>
+<h4 id="自定义选择器"><a href="#自定义选择器" class="headerlink" title="自定义选择器"></a>自定义选择器</h4><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">@custom-selector</span> :--heading h1, h2, h3, h4, h5, h6;</span><br><span class="line"><span class="keyword">@custom-selector</span> :--enter :focus,:hover;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">a</span><span class="selector-pseudo">:--enter</span>&#123;</span><br><span class="line">    <span class="attribute">color</span>: <span class="number">#f40</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-pseudo">:--heading</span>&#123;</span><br><span class="line">    <span class="attribute">font-weight</span>:bold;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-pseudo">:--heading.active</span>&#123;</span><br><span class="line">    <span class="attribute">font-weight</span>:bold;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编译后</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">a</span><span class="selector-pseudo">:focus</span>,<span class="selector-tag">a</span><span class="selector-pseudo">:hover</span>&#123;</span><br><span class="line">    <span class="attribute">color</span>: <span class="number">#f40</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">h1</span>,<span class="selector-tag">h2</span>,<span class="selector-tag">h3</span>,<span class="selector-tag">h4</span>,<span class="selector-tag">h5</span>,<span class="selector-tag">h6</span>&#123;</span><br><span class="line">    <span class="attribute">font-weight</span>:bold;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">h1</span><span class="selector-class">.active</span>,<span class="selector-tag">h2</span><span class="selector-class">.active</span>,<span class="selector-tag">h3</span><span class="selector-class">.active</span>,<span class="selector-tag">h4</span><span class="selector-class">.active</span>,<span class="selector-tag">h5</span><span class="selector-class">.active</span>,<span class="selector-tag">h6</span><span class="selector-class">.active</span>&#123;</span><br><span class="line">    <span class="attribute">font-weight</span>:bold;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="嵌套"><a href="#嵌套" class="headerlink" title="嵌套"></a>嵌套</h4><p>与LESS相同，只不过嵌套的选择器前必须使用符号<code>&amp;</code></p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.a</span> &#123;</span><br><span class="line">    <span class="attribute">color</span>: red;</span><br><span class="line">    <span class="selector-tag">&amp;</span> <span class="selector-class">.b</span> &#123;</span><br><span class="line">        <span class="attribute">color</span>: green;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="selector-tag">&amp;</span> &gt; <span class="selector-class">.b</span> &#123;</span><br><span class="line">        <span class="attribute">color</span>: blue;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="selector-tag">&amp;</span><span class="selector-pseudo">:hover</span> &#123;</span><br><span class="line">        <span class="attribute">color</span>: <span class="number">#000</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编译后</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.a</span> &#123;</span><br><span class="line">    <span class="attribute">color</span>: red</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.a</span> <span class="selector-class">.b</span> &#123;</span><br><span class="line">    <span class="attribute">color</span>: green;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.a</span>&gt;<span class="selector-class">.b</span> &#123;</span><br><span class="line">    <span class="attribute">color</span>: blue;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.a</span><span class="selector-pseudo">:hover</span> &#123;</span><br><span class="line">    <span class="attribute">color</span>: <span class="number">#000</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="postcss-apply"><a href="#postcss-apply" class="headerlink" title="postcss-apply"></a>postcss-apply</h2><p>该插件可以支持在css中书写属性集</p>
+<p>类似于LESS中的混入，可以利用CSS的新语法定义一个CSS代码片段，然后在需要的时候应用它</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-pseudo">:root</span> &#123;</span><br><span class="line">  <span class="attribute">--center</span>: &#123;</span><br><span class="line">    <span class="attribute">position</span>: absolute;</span><br><span class="line">    <span class="attribute">left</span>: <span class="number">50%</span>;</span><br><span class="line">    <span class="attribute">top</span>: <span class="number">50%</span>;</span><br><span class="line">    <span class="attribute">transform</span>: translate(-<span class="number">50%</span>, -<span class="number">50%</span>);</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.item</span>&#123;</span><br><span class="line">    <span class="variable">@apply</span> --center;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编译后</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.item</span>&#123;</span><br><span class="line">  <span class="attribute">position</span>: absolute;</span><br><span class="line">  <span class="attribute">left</span>: <span class="number">50%</span>;</span><br><span class="line">  <span class="attribute">top</span>: <span class="number">50%</span>;</span><br><span class="line">  <span class="attribute">-webkit-transform</span>: <span class="built_in">translate</span>(-<span class="number">50%</span>, -<span class="number">50%</span>);</span><br><span class="line">  <span class="attribute">transform</span>: <span class="built_in">translate</span>(-<span class="number">50%</span>, -<span class="number">50%</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>实际上，该功能也属于cssnext，不知为何<code>postcss-preset-env</code>没有支持</p>
+</blockquote>
+<h2 id="postcss-color-function"><a href="#postcss-color-function" class="headerlink" title="postcss-color-function"></a>postcss-color-function</h2><p>该插件支持在源码中使用一些颜色函数</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">body</span> &#123;</span><br><span class="line">    <span class="comment">/* 使用颜色#aabbcc，不做任何处理，等同于直接书写 #aabbcc */</span></span><br><span class="line">    <span class="attribute">color</span>: color(<span class="number">#aabbcc</span>);</span><br><span class="line">    <span class="comment">/* 将颜色#aabbcc透明度设置为90% */</span></span><br><span class="line">    <span class="attribute">color</span>: color(<span class="number">#aabbcc</span> a(<span class="number">90%</span>));</span><br><span class="line">    <span class="comment">/* 将颜色#aabbcc的红色部分设置为90% */</span></span><br><span class="line">    <span class="attribute">color</span>: color(<span class="number">#aabbcc</span> red(<span class="number">90%</span>));</span><br><span class="line">    <span class="comment">/* 将颜色#aabbcc调亮50%（更加趋近于白色），类似于less中的lighten函数 */</span></span><br><span class="line">    <span class="attribute">color</span>: color(<span class="number">#aabbcc</span> tint(<span class="number">50%</span>));</span><br><span class="line">    <span class="comment">/* 将颜色#aabbcc调暗50%（更加趋近于黑色），类似于less中的darken函数 */</span></span><br><span class="line">    <span class="attribute">color</span>: color(<span class="number">#aabbcc</span> shade(<span class="number">50%</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编译后</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">body</span> &#123;</span><br><span class="line">    <span class="comment">/* 使用颜色#aabbcc，不做任何处理，等同于直接书写 #aabbcc */</span></span><br><span class="line">    <span class="attribute">color</span>: <span class="built_in">rgb</span>(<span class="number">170</span>, <span class="number">187</span>, <span class="number">204</span>);</span><br><span class="line">    <span class="comment">/* 将颜色#aabbcc透明度设置为90% */</span></span><br><span class="line">    <span class="attribute">color</span>: <span class="built_in">rgba</span>(<span class="number">170</span>, <span class="number">187</span>, <span class="number">204</span>, <span class="number">0.9</span>);</span><br><span class="line">    <span class="comment">/* 将颜色#aabbcc的红色部分设置为90% */</span></span><br><span class="line">    <span class="attribute">color</span>: <span class="built_in">rgb</span>(<span class="number">230</span>, <span class="number">187</span>, <span class="number">204</span>);</span><br><span class="line">    <span class="comment">/* 将颜色#aabbcc调亮50%（更加趋近于白色），类似于less中的lighten函数 */</span></span><br><span class="line">    <span class="attribute">color</span>: <span class="built_in">rgb</span>(<span class="number">213</span>, <span class="number">221</span>, <span class="number">230</span>);</span><br><span class="line">    <span class="comment">/* 将颜色#aabbcc调暗50%（更加趋近于黑色），类似于less中的darken函数 */</span></span><br><span class="line">    <span class="attribute">color</span>: <span class="built_in">rgb</span>(<span class="number">85</span>, <span class="number">94</span>, <span class="number">102</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="扩展-postcss-import"><a href="#扩展-postcss-import" class="headerlink" title="[扩展]postcss-import"></a>[扩展]postcss-import</h2><p>该插件可以让你在<code>postcss</code>文件中导入其他样式代码，通过该插件可以将它们合并</p>
+<blockquote>
+<p>由于后续的课程中，会将postcss加入到webpack中，而webpack本身具有依赖分析的功能，所以该插件的实际意义不大</p>
+</blockquote>
+<h2 id="stylelint"><a href="#stylelint" class="headerlink" title="stylelint"></a>stylelint</h2><blockquote>
+<p>官网：<a href="https://stylelint.io/" target="_blank" rel="noopener">https://stylelint.io/</a></p>
+</blockquote>
+<p>在实际的开发中，我们可能会错误的或不规范的书写一些css代码，stylelint插件会即时的发现错误</p>
+<p>由于不同的公司可能使用不同的CSS书写规范，stylelint为了保持灵活，它本身并没有提供具体的规则验证</p>
+<p>你需要安装或自行编写规则验证方案</p>
+<p>通常，我们会安装<code>stylelint-config-standard</code>库来提供标准的CSS规则判定</p>
+<p>安装好后，我们需要告诉stylelint使用该库来进行规则验证</p>
+<p>告知的方式有多种，比较常见的是使用文件<code>.stylelintrc</code></p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//.styleintrc</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="attr">"extends"</span>: <span class="string">"stylelint-config-standard"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>此时，如果你的代码出现不规范的地方，编译时将会报出错误</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">body</span> &#123;</span><br><span class="line">    <span class="attribute">background</span>: <span class="number">#f4</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="assets/2020-02-05-14-37-11.png" alt=""></p>
+<p>发生了两处错误：</p>
+<ol>
+<li>缩进应该只有两个空格</li>
+<li>十六进制的颜色值不正确</li>
+</ol>
+<p>如果某些规则并非你所期望的，可以在配置中进行设置</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"extends"</span>: <span class="string">"stylelint-config-standard"</span>,</span><br><span class="line">    <span class="attr">"rules"</span>: &#123;</span><br><span class="line">        <span class="attr">"indentation"</span>: <span class="literal">null</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>设置为<code>null</code>可以禁用该规则，或者设置为4，表示一个缩进有4个空格。具体的设置需要参见stylelint文档：<a href="https://stylelint.io/" target="_blank" rel="noopener">https://stylelint.io/</a></p>
+<p>但是这种错误报告需要在编译时才会发生，如果我希望在编写代码时就自动在编辑器里报错呢？</p>
+<p>既然想在编辑器里达到该功能，那么就要在编辑器里做文章</p>
+<p>安装vscode的插件<code>stylelint</code>即可，它会读取你工程中的配置文件，按照配置进行实时报错</p>
+<blockquote>
+<p>实际上，如果你拥有了<code>stylelint</code>插件，可以不需要在postcss中使用该插件了</p>
+</blockquote>
+<h1 id="抽离css文件"><a href="#抽离css文件" class="headerlink" title="抽离css文件"></a>抽离css文件</h1><p>目前，css代码被css-loader转换后，交给的是style-loader进行处理。</p>
+<p>style-loader使用的方式是用一段js代码，将样式加入到style元素中。</p>
+<p>而实际的开发中，我们往往希望依赖的样式最终形成一个css文件</p>
+<p>此时，就需要用到一个库：<code>mini-css-extract-plugin</code></p>
+<p>该库提供了1个plugin和1个loader</p>
+<ul>
+<li>plugin：负责生成css文件</li>
+<li>loader：负责记录要生成的css文件的内容，同时导出开启css-module后的样式对象</li>
+</ul>
+<p>使用方式：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> MiniCssExtractPlugin = <span class="built_in">require</span>(<span class="string">"mini-css-extract-plugin"</span>)</span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">    <span class="built_in">module</span>: &#123;</span><br><span class="line">        rules: [</span><br><span class="line">            &#123;</span><br><span class="line">                test: <span class="regexp">/\.css$/</span>, <span class="attr">use</span>: [MiniCssExtractPlugin.loader, <span class="string">"css-loader?modules"</span>]</span><br><span class="line">            &#125;</span><br><span class="line">        ]</span><br><span class="line">    &#125;,</span><br><span class="line">    plugins: [</span><br><span class="line">        <span class="keyword">new</span> MiniCssExtractPlugin() <span class="comment">//负责生成css文件</span></span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>配置生成的文件名</strong></p>
+<p>同<code>output.filename</code>的含义一样，即根据chunk生成的样式文件名</p>
+<p>配置生成的文件名，例如<code>[name].[contenthash:5].css</code></p>
+<p>默认情况下，每个chunk对应一个css文件</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/webpack/" rel="tag"># webpack</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/09/27/webpack%E5%B8%B8%E7%94%A8%E6%8F%92%E4%BB%B6/" rel="prev" title="webpack常用插件">
+      <i class="fa fa-chevron-left"></i> webpack常用插件
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/09/28/vueMixin/" rel="next" title="vueMixin">
+      vueMixin <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#css工程化概述"><span class="nav-number">1.</span> <span class="nav-text">css工程化概述</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#css的问题"><span class="nav-number">1.1.</span> <span class="nav-text">css的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#类名冲突的问题"><span class="nav-number">1.1.1.</span> <span class="nav-text">类名冲突的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#重复样式"><span class="nav-number">1.1.2.</span> <span class="nav-text">重复样式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#css文件细分问题"><span class="nav-number">1.1.3.</span> <span class="nav-text">css文件细分问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何解决"><span class="nav-number">1.2.</span> <span class="nav-text">如何解决</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#解决类名冲突"><span class="nav-number">1.2.1.</span> <span class="nav-text">解决类名冲突</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决重复样式的问题"><span class="nav-number">1.2.2.</span> <span class="nav-text">解决重复样式的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决css文件细分问题"><span class="nav-number">1.2.3.</span> <span class="nav-text">解决css文件细分问题</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#利用webpack拆分css-ignore"><span class="nav-number">2.</span> <span class="nav-text">利用webpack拆分css {ignore}</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#css-loader"><span class="nav-number">2.1.</span> <span class="nav-text">css-loader</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#style-loader"><span class="nav-number">2.2.</span> <span class="nav-text">style-loader</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#BEM"><span class="nav-number">3.</span> <span class="nav-text">BEM</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#css-in-js"><span class="nav-number">4.</span> <span class="nav-text">css in js</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#css-module-ignore"><span class="nav-number">5.</span> <span class="nav-text">css module {ignore}</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#思路"><span class="nav-number">5.1.</span> <span class="nav-text">思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现原理"><span class="nav-number">5.2.</span> <span class="nav-text">实现原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何应用样式"><span class="nav-number">5.3.</span> <span class="nav-text">如何应用样式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他操作"><span class="nav-number">5.4.</span> <span class="nav-text">其他操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#全局类名"><span class="nav-number">5.4.1.</span> <span class="nav-text">全局类名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何控制最终的类名"><span class="nav-number">5.4.2.</span> <span class="nav-text">如何控制最终的类名</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他注意事项"><span class="nav-number">5.5.</span> <span class="nav-text">其他注意事项</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CSS预编译器-ignore"><span class="nav-number">6.</span> <span class="nav-text">CSS预编译器 {ignore}</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本原理"><span class="nav-number">6.1.</span> <span class="nav-text">基本原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LESS的安装和使用"><span class="nav-number">6.2.</span> <span class="nav-text">LESS的安装和使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LESS的基本使用"><span class="nav-number">6.3.</span> <span class="nav-text">LESS的基本使用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#PostCss-ignore"><span class="nav-number">7.</span> <span class="nav-text">PostCss {ignore}</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是PostCss"><span class="nav-number">8.</span> <span class="nav-text">什么是PostCss</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装"><span class="nav-number">9.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置文件"><span class="nav-number">10.</span> <span class="nav-text">配置文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#插件"><span class="nav-number">11.</span> <span class="nav-text">插件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#postcss-preset-env"><span class="nav-number">11.1.</span> <span class="nav-text">postcss-preset-env</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#自动的厂商前缀"><span class="nav-number">11.1.1.</span> <span class="nav-text">自动的厂商前缀</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#未来的CSS语法"><span class="nav-number">11.1.2.</span> <span class="nav-text">未来的CSS语法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#变量"><span class="nav-number">11.1.2.1.</span> <span class="nav-text">变量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#自定义选择器"><span class="nav-number">11.1.2.2.</span> <span class="nav-text">自定义选择器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#嵌套"><span class="nav-number">11.1.2.3.</span> <span class="nav-text">嵌套</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#postcss-apply"><span class="nav-number">11.2.</span> <span class="nav-text">postcss-apply</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#postcss-color-function"><span class="nav-number">11.3.</span> <span class="nav-text">postcss-color-function</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#扩展-postcss-import"><span class="nav-number">11.4.</span> <span class="nav-text">[扩展]postcss-import</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#stylelint"><span class="nav-number">11.5.</span> <span class="nav-text">stylelint</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#抽离css文件"><span class="nav-number">12.</span> <span class="nav-text">抽离css文件</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jimmy.H</p>
+  <div class="site-description" itemprop="description">笔记</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/394104177" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;394104177" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jimmy.H</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div><script defer src="/lib/three.js"></script>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

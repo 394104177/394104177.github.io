@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="clean-webpack-plugin  html-webpack-plugin copy-webpack-plugin 开发服务器在开发阶段，目前遇到的问题是打包、运行、调试过程过于繁琐，回顾一下我们的操作流程：  编写代码 控制台运行命令完成打包 打开页面查看效果 继续编写代码，回到步骤2">
+<meta property="og:type" content="article">
+<meta property="og:title" content="webpack常用插件">
+<meta property="og:url" content="http://yoursite.com/2020/09/27/webpack%E5%B8%B8%E7%94%A8%E6%8F%92%E4%BB%B6/index.html">
+<meta property="og:site_name" content="choooopa的博客">
+<meta property="og:description" content="clean-webpack-plugin  html-webpack-plugin copy-webpack-plugin 开发服务器在开发阶段，目前遇到的问题是打包、运行、调试过程过于繁琐，回顾一下我们的操作流程：  编写代码 控制台运行命令完成打包 打开页面查看效果 继续编写代码，回到步骤2">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-09-26T20:52:21.000Z">
+<meta property="article:modified_time" content="2020-11-28T17:04:30.574Z">
+<meta property="article:author" content="Jimmy.H">
+<meta property="article:tag" content="webpack">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2020/09/27/webpack%E5%B8%B8%E7%94%A8%E6%8F%92%E4%BB%B6/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>webpack常用插件 | choooopa的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">choooopa的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/09/27/webpack%E5%B8%B8%E7%94%A8%E6%8F%92%E4%BB%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Jimmy.H">
+      <meta itemprop="description" content="笔记">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="choooopa的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          webpack常用插件
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-09-27 04:52:21" itemprop="dateCreated datePublished" datetime="2020-09-27T04:52:21+08:00">2020-09-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-11-29 01:04:30" itemprop="dateModified" datetime="2020-11-29T01:04:30+08:00">2020-11-29</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/webpack/" itemprop="url" rel="index"><span itemprop="name">webpack</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>clean-webpack-plugin </p>
+<p>html-webpack-plugin</p>
+<p>copy-webpack-plugin</p>
+<h1 id="开发服务器"><a href="#开发服务器" class="headerlink" title="开发服务器"></a>开发服务器</h1><p>在<strong>开发阶段</strong>，目前遇到的问题是打包、运行、调试过程过于繁琐，回顾一下我们的操作流程：</p>
+<ol>
+<li>编写代码</li>
+<li>控制台运行命令完成打包</li>
+<li>打开页面查看效果</li>
+<li>继续编写代码，回到步骤2<a id="more"></a>
+并且，我们往往希望把最终生成的代码和页面部署到服务器上，来模拟真实环境</li>
+</ol>
+<p>为了解决这些问题，webpack官方制作了一个单独的库：<strong>webpack-dev-server</strong></p>
+<p>它<strong>既不是plugin也不是loader</strong></p>
+<p>先来看看它怎么用</p>
+<ol>
+<li>安装</li>
+<li>执行<code>webpack-dev-server</code>命令</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">这个命令是专门为开发阶段服务的，真正部署的时候还是得使用webpack命令</span><br><span class="line"></span><br><span class="line">当我们执行&#96;&#96;&#96;webpack-dev-server&#96;&#96;&#96;命令后，它做了以下操作：</span><br><span class="line"></span><br><span class="line">1. 内部执行webpack命令，传递命令参数</span><br><span class="line">2. 开启watch</span><br><span class="line">3. 注册hooks：类似于plugin，webpack-dev-server会向webpack中注册一些钩子函数，主要功能如下：</span><br><span class="line">   1. 将资源列表（aseets）保存起来</span><br><span class="line">   2. 禁止webpack输出文件</span><br><span class="line">4. 用express开启一个服务器，监听某个端口，当请求到达后，根据请求的路径，给予相应的资源内容</span><br><span class="line"></span><br><span class="line">**配置**</span><br><span class="line"></span><br><span class="line">针对webpack-dev-server的配置，参考：https:&#x2F;&#x2F;www.webpackjs.com&#x2F;configuration&#x2F;dev-server&#x2F;</span><br><span class="line"></span><br><span class="line">常见配置有：</span><br><span class="line"></span><br><span class="line">- port：配置监听端口</span><br><span class="line">- proxy：配置代理，常用于跨域访问</span><br><span class="line">- stats：配置控制台输出内容</span><br><span class="line"></span><br><span class="line">file-loader: 生成依赖的文件到输出目录，然后将模块文件设置为：导出一个路径\</span><br><span class="line"></span><br><span class="line">&#96;&#96;&#96;js</span><br><span class="line">&#x2F;&#x2F;file-loader</span><br><span class="line">function loader(source)&#123;</span><br><span class="line">	&#x2F;&#x2F; source：文件内容（图片内容 buffer）</span><br><span class="line">	&#x2F;&#x2F; 1. 生成一个具有相同文件内容的文件到输出目录</span><br><span class="line">	&#x2F;&#x2F; 2. 返回一段代码   export default &quot;文件名&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>url-loader：将依赖的文件转换为：导出一个base64格式的字符串</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//file-loader</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">loader</span>(<span class="params">source</span>)</span>&#123;</span><br><span class="line">	<span class="comment">// source：文件内容（图片内容 buffer）</span></span><br><span class="line">	<span class="comment">// 1. 根据buffer生成一个base64编码</span></span><br><span class="line">	<span class="comment">// 2. 返回一段代码   export default "base64编码"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="解决路径问题"><a href="#解决路径问题" class="headerlink" title="解决路径问题"></a>解决路径问题</h1><p>在使用file-loader或url-loader时，可能会遇到一个非常有趣的问题</p>
+<p>比如，通过webpack打包的目录结构如下：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">dist</span></span><br><span class="line">    <span class="string">|——</span> <span class="string">img</span></span><br><span class="line">        <span class="string">|——</span> <span class="string">a.png</span>  <span class="comment">#file-loader生成的文件</span></span><br><span class="line">    <span class="string">|——</span> <span class="string">scripts</span></span><br><span class="line">        <span class="string">|——</span> <span class="string">main.js</span>  <span class="comment">#export default "img/a.png"</span></span><br><span class="line">    <span class="string">|——</span> <span class="string">html</span></span><br><span class="line">        <span class="string">|——</span> <span class="string">index.html</span> <span class="comment">#&lt;script src="../scripts/main.js" &gt;&lt;/script&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>这种问题发生的根本原因：模块中的路径来自于某个loader或plugin，当产生路径时，loader或plugin只有相对于dist目录的路径，并不知道该路径将在哪个资源中使用，从而无法确定最终正确的路径</p>
+<p>面对这种情况，需要依靠webpack的配置publicPath解决</p>
+<h1 id="webpack内置插件-ignore"><a href="#webpack内置插件-ignore" class="headerlink" title="webpack内置插件 {ignore}"></a>webpack内置插件 {ignore}</h1><p>所有的webpack内置插件都作为webpack的静态属性存在的，使用下面的方式即可创建一个插件对象</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> webpack = <span class="built_in">require</span>(<span class="string">"webpack"</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">new</span> webpack.插件名(options)</span><br></pre></td></tr></table></figure>
+
+<h2 id="DefinePlugin"><a href="#DefinePlugin" class="headerlink" title="DefinePlugin"></a>DefinePlugin</h2><p>全局常量定义插件，使用该插件通常定义一些常量值，例如：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> webpack.DefinePlugin(&#123;</span><br><span class="line">    PI: <span class="string">`Math.PI`</span>, <span class="comment">// PI = Math.PI</span></span><br><span class="line">    VERSION: <span class="string">`"1.0.0"`</span>, <span class="comment">// VERSION = "1.0.0"</span></span><br><span class="line">    DOMAIN: <span class="built_in">JSON</span>.stringify(<span class="string">"duyi.com"</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>这样一来，在源码中，我们可以直接使用插件中提供的常量，当webpack编译完成后，会自动替换为常量的值</p>
+<h2 id="BannerPlugin"><a href="#BannerPlugin" class="headerlink" title="BannerPlugin"></a>BannerPlugin</h2><p>它可以为每个chunk生成的文件头部添加一行注释，一般用于添加作者、公司、版权等信息</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> webpack.BannerPlugin(&#123;</span><br><span class="line">  banner: <span class="string">`</span></span><br><span class="line"><span class="string">  hash:[hash]</span></span><br><span class="line"><span class="string">  chunkhash:[chunkhash]</span></span><br><span class="line"><span class="string">  name:[name]</span></span><br><span class="line"><span class="string">  author:yuanjin</span></span><br><span class="line"><span class="string">  corporation:duyi</span></span><br><span class="line"><span class="string">  `</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="ProvidePlugin"><a href="#ProvidePlugin" class="headerlink" title="ProvidePlugin"></a>ProvidePlugin</h2><p>自动加载模块，而不必到处 import 或 require </p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> webpack.ProvidePlugin(&#123;</span><br><span class="line">  $: <span class="string">'jquery'</span>,</span><br><span class="line">  _: <span class="string">'lodash'</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>然后在我们任意源码中：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">'#item'</span>); <span class="comment">// &lt;= 起作用</span></span><br><span class="line">_.drop([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>], <span class="number">2</span>); <span class="comment">// &lt;= 起作用</span></span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/webpack/" rel="tag"># webpack</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/09/27/webpack%E7%BC%96%E8%AF%91/" rel="prev" title="webpack编译">
+      <i class="fa fa-chevron-left"></i> webpack编译
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/09/27/css%E5%B7%A5%E7%A8%8B%E5%8C%96/" rel="next" title="css工程化">
+      css工程化 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#开发服务器"><span class="nav-number">1.</span> <span class="nav-text">开发服务器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#解决路径问题"><span class="nav-number">2.</span> <span class="nav-text">解决路径问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#webpack内置插件-ignore"><span class="nav-number">3.</span> <span class="nav-text">webpack内置插件 {ignore}</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#DefinePlugin"><span class="nav-number">3.1.</span> <span class="nav-text">DefinePlugin</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BannerPlugin"><span class="nav-number">3.2.</span> <span class="nav-text">BannerPlugin</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ProvidePlugin"><span class="nav-number">3.3.</span> <span class="nav-text">ProvidePlugin</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Jimmy.H</p>
+  <div class="site-description" itemprop="description">笔记</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/394104177" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;394104177" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jimmy.H</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div><script defer src="/lib/three.js"></script>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
